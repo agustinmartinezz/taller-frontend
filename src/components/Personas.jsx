@@ -11,6 +11,7 @@ const Personas = () => {
       "apikey" : api_key,
       "iduser" : user_id
   }
+
   const [ocupaciones, setOcupaciones] = useState([])
   const [selectedOcup, setSelectedOcup] = useState(0)
   const [personas, setPersonas] = useState([])
@@ -31,8 +32,6 @@ const Personas = () => {
   const getOcupaciones = async () => {
     const data = {
       headers : headers,
-      apikey : api_key,
-      iduser : user_id
     }
 
     const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
