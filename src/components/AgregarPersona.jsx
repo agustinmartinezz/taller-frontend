@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import toast from 'react-hot-toast';
+import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
+import { useDispatch, useSelector } from 'react-redux'
+import { setDepartamentos } from '../features/departamentoSlice'
+import { addPersona } from '../features/personaSlice'
 
-const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
+const AgregarPersona = () => {
   const BASE_URL = "https://censo.develotion.com/"
   const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
   const user_id = "600"
@@ -11,8 +16,11 @@ const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
     "apikey" : api_key,
     "iduser" : user_id
   }
+  
+  const dispatch = useDispatch()
 
-  const [departamentos, setDepartamentos] = useState([])
+  const departamento = useSelector(state => state.departamento)
+
   const [ciudades, setCiudades] = useState([])
   const [ocupaciones, setOcupaciones] = useState([])
 
@@ -29,7 +37,7 @@ const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
 
     const res = await axios.get(BASE_URL + "/departamentos.php", data)
 
-    setDepartamentos(res.data.departamentos)
+    dispatch(setDepartamentos(res.data.departamentos))
   }
 
   const getCiudades = async () => {
@@ -56,54 +64,56 @@ const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
     )))
   }
 
-  const esMenorEdad = (date) => {
-    const currentDate = new Date();
-    const inputDate = new Date(date);
-    const differenceInMilliseconds = currentDate - inputDate;
-    const yearsDifference = differenceInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
-    return yearsDifference < 18;
-  }
-
   const agregarPersona = async () => {
-    let ingresoValido = true
     let nombre = getNombre()
 
     if (!validateText(nombre)) {
-      ingresoValido = false
-    }
-
-    if (!validateNumber(selectedDep)) {
-      ingresoValido = false
-    }
-
-    if (!validateNumber(selectedCiu)) {
-      ingresoValido = false
-    }   
-
-    if (!validateNumber(selectedOcup)) {
-      ingresoValido = false 
+      toast.error("Ingrese un nombre válido.")
+      return
     }
 
     if (!validateDate(fechaNac)) {
-      ingresoValido = false
+      toast.error("Ingrese una fecha de nacimiento válida.")
+      return
     }
 
-    if (ingresoValido) {
-      const params = {
-        idUsuario : user_id,
-        nombre : nombre,
-        departamento : selectedDep,
-        ciudad : selectedCiu,
-        fechaNacimiento : fechaNac,
-        ocupacion : selectedOcup
+    if (!validateNumber(selectedDep)) {
+      toast.error("Ingrese un departamento.")
+      return
+    }
+
+    if (!validateNumber(selectedCiu)) {
+      toast.error("Ingrese una ciudad.")
+      return
+    }   
+
+    if (!validateNumber(selectedOcup)) {
+      toast.error("Ingrese una ocupación.")
+      return 
+    }
+
+    const body = {
+      idUsuario : user_id,
+      nombre : nombre,
+      departamento : selectedDep,
+      ciudad : selectedCiu,
+      fechaNacimiento : fechaNac,
+      ocupacion : selectedOcup
+    }
+
+    try {
+      const res = await axios.post(BASE_URL + "/personas.php", body, { headers })
+      if (res.data.codigo === 200) {
+        toast.success("Persona agregada con éxito!")
+
+        body.id = res.data.idCenso
+
+        dispatch(addPersona(body))
+      } else {
+        toast.error(res.data.mensaje);
       }
-  
-      const data = {
-        headers : headers,
-        params : params
-      }
-  
-      const res = await axios.post(BASE_URL + "/personas.php", data)
+    } catch (e) {
+      toast.error(e.message);
     }
   }
 
@@ -146,7 +156,7 @@ const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
               setSelectedDep(e.target.value)
             }}>
               <option value="">Seleccione Departamento</option>
-              {departamentos.map((departamento) => (
+              {departamento.departamentos.map((departamento) => (
                 <option key={departamento.id} value={departamento.id}>{departamento.nombre}</option>
               ))}
             </select>
@@ -174,7 +184,7 @@ const AgregarPersona = ({validateNumber, validateText, validateDate}) => {
             </select>
           </div>
         </div>
-        <div className='row'>
+        <div className='row text-center'>
           <button className='btn btn-success mt-3' onClick={agregarPersona}>Agregar Persona</button>
         </div>
       </>

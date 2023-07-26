@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
+import axios from 'axios';
+import Persona from './Persona';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPersonas } from '../features/personaSlice';
 
 const Personas = () => {
   const BASE_URL = "https://censo.develotion.com/"
@@ -11,10 +14,12 @@ const Personas = () => {
       "apikey" : api_key,
       "iduser" : user_id
   }
+  const persona = useSelector(state => state.persona)
+
+  const dispatch = useDispatch()
 
   const [ocupaciones, setOcupaciones] = useState([])
   const [selectedOcup, setSelectedOcup] = useState(0)
-  const [personas, setPersonas] = useState([])
 
   const getPersonas = async () => {
     const data = {
@@ -25,8 +30,9 @@ const Personas = () => {
     }
 
     const res = await axios.get(BASE_URL + "/personas.php", data)
-    
-    setPersonas(res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup))
+    const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
+
+    dispatch(setPersonas(personas))
   }
 
   const getOcupaciones = async () => {
@@ -39,21 +45,6 @@ const Personas = () => {
     setOcupaciones(res.data.ocupaciones)
   }
 
-  const deletePersona = async (idPersona) => {
-    const data = {
-      headers: headers,
-      params : {
-        idCenso : idPersona
-      }
-    }
-
-    try {
-      await axios.delete(BASE_URL + "/personas.php", data)
-    } catch {
-      alert("Error al eliminar persona")
-    }
-  }
-
   useEffect(() => {
     getOcupaciones()
   }, [])
@@ -61,13 +52,6 @@ const Personas = () => {
   useEffect(() => {
     getPersonas()
   }, [selectedOcup])
-
-  const eliminarPersona = (e) => {
-    deletePersona(e.target.id)
-    .then(() => {
-      getPersonas()
-    })
-  }
 
   return (
     <div>
@@ -84,24 +68,13 @@ const Personas = () => {
           ))}
         </select>
       </div>
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nombre</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>        
-          {personas.map((persona) => (
-            <tr key={persona.id} data-ocup={persona.ocupacion}>
-              <th scope='row'>{persona.id}</th>
-              <td>{persona.nombre}</td>
-              <td><button className='btn btn-danger' id={persona.id} onClick={eliminarPersona}>Eliminar</button></td>
-            </tr>
+       <section className='row gap-2'>
+       {persona.personas.map((persona) => (
+            <article key={persona.id} className='col-2 mb-3'>
+              <Persona {...persona}/>
+            </article>
           ))}
-        </tbody>
-      </table>
+       </section>
     </div>
   );
 }

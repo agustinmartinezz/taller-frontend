@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route exact path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
+      <Toaster />
     </div>
   );
 }
