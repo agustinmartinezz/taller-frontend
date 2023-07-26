@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
+import Select from 'react-select';
 import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
@@ -36,8 +37,9 @@ const AgregarPersona = () => {
     }
 
     const res = await axios.get(BASE_URL + "/departamentos.php", data)
+    const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
 
-    dispatch(setDepartamentos(res.data.departamentos))
+    dispatch(setDepartamentos(formattedDepartamentos))
   }
 
   const getCiudades = async () => {
@@ -49,7 +51,10 @@ const AgregarPersona = () => {
     }
 
     const res = await axios.get(BASE_URL + "/ciudades.php", data)
-    setCiudades(res.data.ciudades)
+    
+    const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
+
+    setCiudades(formattedCiudades)
   }
 
   const getOcupaciones = async () => {
@@ -59,9 +64,11 @@ const AgregarPersona = () => {
 
     const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
 
-    setOcupaciones(res.data.ocupaciones.filter((ocupacion) => (
+    const filtered = res.data.ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
-    )))
+    ))
+
+    setOcupaciones(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
   }
 
   const agregarPersona = async () => {
@@ -105,7 +112,7 @@ const AgregarPersona = () => {
       const res = await axios.post(BASE_URL + "/personas.php", body, { headers })
       if (res.data.codigo === 200) {
         toast.success("Persona agregada con éxito!")
-
+        limpiarEstados()
         body.id = res.data.idCenso
 
         dispatch(addPersona(body))
@@ -116,14 +123,23 @@ const AgregarPersona = () => {
       toast.error(e.message);
     }
   }
-
+  
   const getNombre = () => document.getElementById('txtNombrePersona').value
+
+  const limpiarEstados = () => {
+    document.getElementById('txtNombrePersona').value = ""
+    setFechaNac("")
+    setSelectedDep(0)
+    setSelectedCiu(0)
+    setSelectedOcup(0)
+  }
 
   useEffect(() => {
     getDepartamentos()
   }, [])
 
   useEffect(() => {
+    setSelectedCiu("")
     getCiudades()
   }, [selectedDep])
 
@@ -137,13 +153,11 @@ const AgregarPersona = () => {
 
   return (
       <>
-        <div className='row'>
+        <div className='row mb-3'>
             <div className='col-8'>
-              <label htmlFor="txtNombrePersona">Nombre</label>
               <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre'/>
             </div>
             <div className='col-4'>
-              <label htmlFor="birthDate">Nacimiento</label>
               <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
                 setFechaNac(e.target.value)
               }}/>
@@ -151,37 +165,43 @@ const AgregarPersona = () => {
         </div>
         <div className='row'>
           <div className='col-4'>
-            <label htmlFor="selectDepartamento" className="form-label">Departamento</label>
-            <select className="form-select" id="selectDepartamento" value={selectedDep} onChange={(e) => {
-              setSelectedDep(e.target.value)
-            }}>
-              <option value="">Seleccione Departamento</option>
-              {departamento.departamentos.map((departamento) => (
-                <option key={departamento.id} value={departamento.id}>{departamento.nombre}</option>
-              ))}
-            </select>
+            <Select
+              defaultValue={selectedDep}
+              placeholder="Seleccione Departamento"
+              onChange={(e) => {
+                setSelectedDep(e.value);
+              }}
+              options={departamento.departamentos}
+            />
           </div>
           <div className='col-4'>
-            <label htmlFor="selectCiudad" className="form-label">Ciudad</label>
-            <select className="form-select" id="selectCiudad" value={selectedCiu} onChange={(e) => {
-              setSelectedCiu(e.target.value)
-            }}>
-              <option value="">Seleccione Ciudad</option>
-              {ciudades.map((ciudad) => (
-                <option key={ciudad.id} value={ciudad.id}>{ciudad.nombre}</option>
-              ))}
-            </select>
+            <Select
+              defaultValue={selectedCiu}
+              placeholder="Seleccione Ciudad"
+              onChange={(e) => {
+                setSelectedCiu(e.value);
+              }}
+              options={ciudades}
+            />
           </div>
           <div className='col-4'>
-            <label htmlFor="selectOcupacion" className="form-label">Ocupacion</label>
-            <select className="form-select" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
+            {/* <label htmlFor="selectOcupacion" className="form-label">Ocupacion</label> */}
+            <Select
+              defaultValue={selectedOcup}
+              placeholder="Seleccione Ocupacion"
+              onChange={(e) => {
+                setSelectedOcup(e.value);
+              }}
+              options={ocupaciones}
+            />
+            {/* <select className="form-select" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
               setSelectedOcup(e.target.value)
             }}>
               <option value="">Seleccione Ocupacion</option>
               {ocupaciones.map((ocupacion) => (
                 <option key={ocupacion.id} value={ocupacion.id}>{ocupacion.ocupacion}</option>
               ))}
-            </select>
+            </select> */}
           </div>
         </div>
         <div className='row text-center'>
