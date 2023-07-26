@@ -55,11 +55,9 @@ const Personas = () => {
 
   return (
     <div>
-      <div className="input-group mb-3">
-        <div className="input-group-prepend">
-          <label className="input-group-text" htmlFor="selectOcupacion">Ocupacion</label>
-        </div>
-        <select className="custom-select" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
+      <div className="mb-3">
+        <label className="form-label" htmlFor="selectOcupacion">Ocupacion</label>
+        <select className="form-select w-25" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
           setSelectedOcup(e.target.value)
         }}>
           <option value={0}>Todos</option>

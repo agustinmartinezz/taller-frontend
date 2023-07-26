@@ -1,6 +1,7 @@
 import React from 'react'
 import Personas from './Personas'
 import AgregarPersona from './AgregarPersona'
+import TiempoRestante from './TiempoRestante'
 
 const Dashboard = () => {
   return (
@@ -8,6 +9,7 @@ const Dashboard = () => {
       <h2>Dashboard</h2>
       <Personas />
       <AgregarPersona />
+      <TiempoRestante />
     </div>
   )
 }
