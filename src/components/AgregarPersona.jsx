@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import axios from 'axios';
+import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
+
 
 const AgregarPersona = () => {
-  const BASE_URL = "https://censo.develotion.com/"
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
-  const user_id = "600"
+  const BASE_URL = API_BASE_URL;
+  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode
+  const user_id = "600"//! do not hardcode
 
   const headers = {
     "Content-Type" : "application/json",
