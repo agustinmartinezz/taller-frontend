@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
@@ -25,6 +25,7 @@ const AgregarPersona = () => {
   const [ciudades, setCiudades] = useState([])
   const [ocupaciones, setOcupaciones] = useState([])
 
+  const nombreUsuario = useRef(null)
   const [fechaNac, setFechaNac] = useState("")
   const [esMenor, setEsMenor] = useState(false)
   const [selectedDep, setSelectedDep] = useState("")
@@ -72,7 +73,7 @@ const AgregarPersona = () => {
   }
 
   const agregarPersona = async () => {
-    let nombre = getNombre()
+    let nombre = nombreUsuario.current.value
 
     if (!validateText(nombre)) {
       toast.error("Ingrese un nombre válido.")
@@ -123,8 +124,6 @@ const AgregarPersona = () => {
       toast.error(e.message);
     }
   }
-  
-  const getNombre = () => document.getElementById('txtNombrePersona').value
 
   const limpiarEstados = () => {
     document.getElementById('txtNombrePersona').value = ""
@@ -155,7 +154,7 @@ const AgregarPersona = () => {
       <>
         <div className='row mb-3'>
             <div className='col-8'>
-              <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre'/>
+              <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre' ref={nombreUsuario}/>
             </div>
             <div className='col-4'>
               <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
