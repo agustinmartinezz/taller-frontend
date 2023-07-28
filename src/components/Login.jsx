@@ -1,10 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Session.css';
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Link } from 'react-router-dom';
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
-
 
 const Login = () => {
 
@@ -12,6 +11,7 @@ const Login = () => {
     usuario: '',
     password: ''
   });
+  const [errorMsg, setErrorMsg] = useState('');
 
   const navigate = useNavigate();
 
@@ -23,7 +23,15 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    loguearUsuario(userBody);
+    if(!userBody.usuario || !userBody.password){
+      setErrorMsg('Please complete all fields');
+      setUserBody({
+        usuario: '',
+        password: ''
+      });
+    }else{
+      loguearUsuario(userBody);
+    }
   };
 
   const loguearUsuario = async (body) => {
@@ -31,11 +39,16 @@ const Login = () => {
     const res = await axios.post(API_BASE_URL + API_ENDPOINTS.login, body)
       .then((response) => {
         console.log('Solicitud exitosa:', response.data);
-        localStorage.setItem('apikey',response.data.apiKey); 
+        localStorage.setItem('apiKey',response.data.apiKey); 
+        localStorage.setItem('idUsuario',response.data.id); 
         navigate("/dashboard");
       })
       .catch((error) => {
-        //borrar la data de los campos
+        setErrorMsg(error.response.data.mensaje);
+        setUserBody({
+          usuario: '',
+          password: ''
+        });
         console.error('Error en la solicitud:', error);
       });
   }
@@ -47,13 +60,13 @@ const Login = () => {
         <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: '1px' }}>Log in</h3>
 
         <div className="form-outline mb-4">
-            <input type="text" id="form2Example18" name="usuario" 
+            <input value={userBody.usuario} type="text" name="usuario" 
             onChange={handleChange} 
             placeholder="username" className="form-control form-control-lg" />
         </div>
 
         <div className="form-outline mb-4">
-            <input type="password" id="form2Example28" name="password"
+            <input value={userBody.password} type="password" name="password"
             onChange={handleChange} 
             placeholder="password" className="form-control form-control-lg" />
         </div>
@@ -63,9 +76,9 @@ const Login = () => {
             onClick={handleSubmit} 
             >Login</button>
         </div>
-        {/* parrafo para mostrar errores */}
-
-        <p>Don't have an account? <a href="/register" className="link-info">Register here</a></p>
+        {errorMsg && <p className="alert alert-danger" role="alert">{errorMsg}</p>}
+        
+        <p>Don't have an account? <Link href="/register" className="link-info">Register here</Link></p>
         </form>
     </div>
   );
