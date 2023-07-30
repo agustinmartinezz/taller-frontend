@@ -15,8 +15,8 @@ const Navigation = () => {
 
 
   return (
-    <div className='bg-dark d-flex justify-content-center'>
-      <nav className="navbar navbar-expand navbar-dark w-75">
+    <div className='bg-dark'>
+      <nav className="navbar navbar-expand navbar-dark container">
         <a className="navbar-brand" href="/">Censo 2023</a>
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
           <li className="nav-item">

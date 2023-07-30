@@ -5,6 +5,7 @@ import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Session from './components/Session';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<Session operation='register'/>} />
         <Route path="/login" element={<Session operation='login'/>} />
       </Routes>
+      <Toaster />
     </div>
   );
 }
