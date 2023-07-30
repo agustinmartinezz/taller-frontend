@@ -1,0 +1,10 @@
+@import "./variables.css";
+
+.container.dash{
+    background-color: var(--light-contrast);
+    margin: 0;
+    padding: 3em;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+}
