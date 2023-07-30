@@ -2,15 +2,23 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
+import { useNavigate,Link } from 'react-router-dom';
 import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
+import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
 
 const AgregarPersona = () => {
-  const BASE_URL = "https://censo.develotion.com/"
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
-  const user_id = "600"
+  const navigate = useNavigate();
+
+  if(!localStorage.getItem("apiKey")){
+    navigate("/login");
+  }
+
+  const BASE_URL = API_BASE_URL;
+  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode
+  const user_id = "600"//! do not hardcode
 
   const headers = {
     "Content-Type" : "application/json",
@@ -184,7 +192,6 @@ const AgregarPersona = () => {
             />
           </div>
           <div className='col-4'>
-            {/* <label htmlFor="selectOcupacion" className="form-label">Ocupacion</label> */}
             <Select
               defaultValue={selectedOcup}
               placeholder="Seleccione Ocupacion"
@@ -193,14 +200,6 @@ const AgregarPersona = () => {
               }}
               options={ocupaciones}
             />
-            {/* <select className="form-select" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
-              setSelectedOcup(e.target.value)
-            }}>
-              <option value="">Seleccione Ocupacion</option>
-              {ocupaciones.map((ocupacion) => (
-                <option key={ocupacion.id} value={ocupacion.id}>{ocupacion.ocupacion}</option>
-              ))}
-            </select> */}
           </div>
         </div>
         <div className='row text-center'>

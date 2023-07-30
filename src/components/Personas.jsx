@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Persona from './Persona';
+import { useNavigate,Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonas } from '../features/personaSlice';
 
 const Personas = () => {
+  const navigate = useNavigate();
+
+  if(!localStorage.getItem("apiKey")){
+    navigate("/login");
+  }
+
   const BASE_URL = "https://censo.develotion.com/"
   const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
   const user_id = "600"
