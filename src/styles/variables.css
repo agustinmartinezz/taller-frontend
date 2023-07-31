@@ -1,5 +1,6 @@
 :root {
-    --light-contrast: #F5F5FF;
+    --light-contrast: #fbfbfb;
+    --shadows: 2px 2px 4px rgba(0, 0, 0, 0.2);
     --dark-contrast: #252728;
     --primary: #01BAEF;
     --secondary:#104586;

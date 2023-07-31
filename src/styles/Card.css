@@ -1,0 +1,28 @@
+@import "./variables.css";
+
+.card {
+    box-shadow: var(--shadows);
+    max-width: 20em;
+    margin: 0 auto;
+  
+    .card-header {
+      padding: 1em;
+    }
+  
+    .card-body {
+      padding: 1em;
+    }
+  
+    .card-plain {
+      background-color: var(--secondary) ;
+      box-shadow:var(--shadows) ;
+    }
+  
+    .card-footer {
+      padding: 1em;
+      background-color: transparent;
+    }
+  }
+  
+  
+  

@@ -3,7 +3,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useNavigate,Link } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
+import { validateNumber, validateText, validateDate, esMenorEdad } from '../Utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
