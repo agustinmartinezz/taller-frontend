@@ -6,6 +6,7 @@ import TiempoRestante from './TiempoRestante'
 import Card from './Card'
 import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
+import PorcentajeCensados from './PorcentajeCensados';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const Dashboard = () => {
         <ChartReports/>
         <Personas />
         <AgregarPersona />
+        <PorcentajeCensados />
         <TiempoRestante />
       </div>
     </div>

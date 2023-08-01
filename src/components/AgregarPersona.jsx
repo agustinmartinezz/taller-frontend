@@ -3,11 +3,11 @@ import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useNavigate,Link } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad } from '../Utils/utils'
+import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
-import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
+import { API_BASE_URL } from "../config/apiConfig";
 
 const AgregarPersona = () => {
   const navigate = useNavigate();
