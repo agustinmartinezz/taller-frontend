@@ -6,7 +6,6 @@ import { Doughnut,Bar,Pie } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-debugger
 const Chart = ({chartProps}) => {
     let component;
 
