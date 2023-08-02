@@ -7,6 +7,7 @@ import Card from './Card'
 import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
+import Mapa from './Mapa';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -14,7 +15,6 @@ const Dashboard = () => {
   if(!localStorage.getItem("apiKey")){
     navigate("/login");
   }
-  debugger
   
   return (
     <div className='container dash'>
@@ -29,6 +29,7 @@ const Dashboard = () => {
         <AgregarPersona />
         <PorcentajeCensados />
         <TiempoRestante />
+        <Mapa />
       </div>
     </div>
   )
