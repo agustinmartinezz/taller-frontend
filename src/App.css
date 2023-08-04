@@ -1,0 +1,8 @@
+.navContainer, .footerContainer{
+  height: 6.5vh;
+}
+
+.homeContainer {
+  height: 87vh;
+  padding-top: 15px;
+}

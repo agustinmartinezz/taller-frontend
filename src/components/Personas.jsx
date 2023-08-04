@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Persona from './Persona';
+import '../styles/Personas.css'
 import { useNavigate,Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonas } from '../features/personaSlice';
@@ -63,7 +64,7 @@ const Personas = () => {
   return (
     <div>
       <div className="mb-3">
-        <label className="form-label" htmlFor="selectOcupacion">Ocupacion</label>
+        <label className="form-label" htmlFor="selectOcupacion">Filtrar por Ocupación</label>
         <select className="form-select w-25" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
           setSelectedOcup(e.target.value)
         }}>
@@ -73,9 +74,9 @@ const Personas = () => {
           ))}
         </select>
       </div>
-       <section className='row gap-2'>
+       <section className='row gap-2 justify-content-center'>
        {persona.personas.map((persona) => (
-            <article key={persona.id} className='col-2 mb-3'>
+            <article key={persona.id} className='col-2 mb-3 articlePersona'>
               <Persona {...persona}/>
             </article>
           ))}
