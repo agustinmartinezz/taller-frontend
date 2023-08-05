@@ -8,13 +8,14 @@ import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
 
+
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  if(!localStorage.getItem("apiKey")){
+  if(!localStorage.getItem("apiKey") || !localStorage.getItem("userId")){
     navigate("/login");
   }
-  debugger
   
   return (
     <div className='container dash'>

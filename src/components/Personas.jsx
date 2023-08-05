@@ -6,11 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setPersonas } from '../features/personaSlice';
 
 const Personas = () => {
-  const navigate = useNavigate();
-
-  if(!localStorage.getItem("apiKey")){
-    navigate("/login");
-  }
 
   const BASE_URL = "https://censo.develotion.com/"
   const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
@@ -21,11 +16,13 @@ const Personas = () => {
       "apikey" : api_key,
       "iduser" : user_id
   }
-  const persona = useSelector(state => state.persona)
+  const persona = useSelector(state => state.persona);
+  const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
+
 
   const dispatch = useDispatch()
 
-  const [ocupaciones, setOcupaciones] = useState([])
+  //const [ocupaciones, setOcupaciones] = useState([])
   const [selectedOcup, setSelectedOcup] = useState(0)
 
   const getPersonas = async () => {
@@ -42,19 +39,19 @@ const Personas = () => {
     dispatch(setPersonas(personas))
   }
 
-  const getOcupaciones = async () => {
-    const data = {
-      headers : headers,
-    }
+  // const getOcupaciones = async () => {
+  //   const data = {
+  //     headers : headers,
+  //   }
 
-    const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
+  //   const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
 
-    setOcupaciones(res.data.ocupaciones)
-  }
+  //   setOcupaciones(res.data.ocupaciones)
+  // }
 
-  useEffect(() => {
-    getOcupaciones()
-  }, [])
+  // useEffect(() => {
+  //   getOcupaciones()
+  // }, [])
 
   useEffect(() => {
     getPersonas()

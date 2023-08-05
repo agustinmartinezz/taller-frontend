@@ -6,7 +6,7 @@ import { useNavigate,Link } from 'react-router-dom';
 const Home = () => {
   const navigate = useNavigate();
 
-  if(!localStorage.getItem("apiKey")){
+  if(!localStorage.getItem("apiKey") || !localStorage.getItem("userId")){
     navigate("/login");
   }
   

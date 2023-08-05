@@ -3,22 +3,18 @@ import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useNavigate,Link } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
+import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials } from '../Utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
 import { API_BASE_URL } from "../config/apiConfig";
 
 const AgregarPersona = () => {
-  const navigate = useNavigate();
-
-  if(!localStorage.getItem("apiKey")){
-    navigate("/login");
-  }
 
   const BASE_URL = API_BASE_URL;
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode
-  const user_id = "600"//! do not hardcode
+  console.log('getCredentials()',getCredentials())
+  const api_key = getCredentials().apiKey //! do not hardcode
+  const user_id = getCredentials().userId//! do not hardcode
 
   const headers = {
     "Content-Type" : "application/json",
@@ -26,12 +22,16 @@ const AgregarPersona = () => {
     "iduser" : user_id
   }
   
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const departamento = useSelector(state => state.departamento)
+
+  const departamento = useSelector(state => state.departamento);
+  const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
+
 
   const [ciudades, setCiudades] = useState([])
-  const [ocupaciones, setOcupaciones] = useState([])
+  const [ocuFiltradas, setOcupaciones] = useState([ocupaciones])
 
   const nombreUsuario = useRef(null)
   const [fechaNac, setFechaNac] = useState("")
@@ -41,14 +41,19 @@ const AgregarPersona = () => {
   const [selectedOcup, setSelectedOcup] = useState("")
 
   const getDepartamentos = async () => {
-    const data = {
-      headers : headers,
-    }
+    const data = {headers};
+    axios.get(BASE_URL + "/departamentos.php", data)
+    .then((res) => {
+        if(res.codigo == 401)  navigate("/login");
+        console.log("Success:", res.data);
+        const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
+        dispatch(setDepartamentos(formattedDepartamentos))
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        navigate("/login");
+    });
 
-    const res = await axios.get(BASE_URL + "/departamentos.php", data)
-    const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
-
-    dispatch(setDepartamentos(formattedDepartamentos))
   }
 
   const getCiudades = async () => {
@@ -66,14 +71,9 @@ const AgregarPersona = () => {
     setCiudades(formattedCiudades)
   }
 
-  const getOcupaciones = async () => {
-    const data = {
-      headers : headers,
-    }
-
-    const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
-
-    const filtered = res.data.ocupaciones.filter((ocupacion) => (
+  const getOcupaciones = (ocupaciones) => {
+    debugger
+    const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
 
@@ -151,7 +151,7 @@ const AgregarPersona = () => {
   }, [selectedDep])
 
   useEffect(() => {
-    getOcupaciones()
+    getOcupaciones(ocupaciones)
   }, [esMenor])
 
   useEffect(() => {
@@ -198,7 +198,7 @@ const AgregarPersona = () => {
               onChange={(e) => {
                 setSelectedOcup(e.value);
               }}
-              options={ocupaciones}
+              options={ocuFiltradas}
             />
           </div>
         </div>

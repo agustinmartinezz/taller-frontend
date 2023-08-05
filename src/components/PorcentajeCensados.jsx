@@ -5,11 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../config/apiConfig";
 
 const PorcentajeCensados = () => {
-  const navigate = useNavigate();
-
-  if(!localStorage.getItem("apiKey")){
-    navigate("/login");
-  }
 
   const BASE_URL = API_BASE_URL;
   const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode

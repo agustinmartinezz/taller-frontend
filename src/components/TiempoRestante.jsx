@@ -1,6 +1,5 @@
 import React from 'react'
-import { finDelCenso } from '../utils/utils'
-
+import { finDelCenso } from '../Utils/utils.js';
 const TiempoRestante = () => {
   const finalCenso = new Date(finDelCenso)
   const fecha = new Date()

@@ -4,7 +4,6 @@ import Chart from './Chart';
 
 
 const Card = ({infoCard}) => {
-debugger
     return (
         <div className="col-lg-4 col-md-6 mt-4 mb-4">
             <div className="card z-index-2 ">
@@ -17,11 +16,10 @@ debugger
                 </div>
                 <div className="card-body">
                     <h6 className="mb-0 ">{infoCard.title}</h6>
-                    <p className="text-sm ">{infoCard.description}</p>
                     <hr className="dark horizontal" />
                     <div className="d-flex ">
                         <i className="material-icons text-sm my-auto me-1"></i>
-                        <p className="mb-0 text-sm"> campaign sent 2 days ago </p>
+                        <p className="mb-0 text-sm">{infoCard.description}</p>
                     </div>
                 </div>
             </div>
