@@ -7,15 +7,23 @@ import Card from './Card'
 import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
+import {getCredentials } from '../Utils/utils'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const usuarioLogueado = useSelector(state => state.logueado).logueado;
 
-  if(!localStorage.getItem("apiKey") || !localStorage.getItem("userId")){
-    navigate("/login");
+  
+  const apiKey = getCredentials().apiKey;
+  const userId = getCredentials().userId;
+
+  if(!apiKey || !userId) { 
+    navigate('/dashboard');
   }
+
   
   return (
     <div className='container dash'>

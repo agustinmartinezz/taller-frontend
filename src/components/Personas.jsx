@@ -8,8 +8,9 @@ import { setPersonas } from '../features/personaSlice';
 const Personas = () => {
 
   const BASE_URL = "https://censo.develotion.com/"
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"
-  const user_id = "600"
+  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"//!
+  const user_id = "600"//!
+  const navigate = useNavigate();
 
   const headers = {
     "Content-Type" : "application/json",
@@ -33,10 +34,19 @@ const Personas = () => {
       }
     }
 
-    const res = await axios.get(BASE_URL + "/personas.php", data)
-    const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
+         axios.get(BASE_URL + "/personas.php", data)
+        .then((res) => {
+            if(res.codigo == 401) navigate("/login");
+            console.log("Success:", res.data);
+            const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
+            dispatch(setPersonas(personas))
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            navigate("/login");
+        });
 
-    dispatch(setPersonas(personas))
+    
   }
 
   // const getOcupaciones = async () => {

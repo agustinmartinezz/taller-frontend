@@ -2,6 +2,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Session.css';
 import React, { useState, useEffect } from 'react';
 import { useNavigate,Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'
+import { setUsuario } from '../features/logueadoSlice'
+import {getCredentials } from '../Utils/utils'
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
@@ -9,6 +12,16 @@ import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
 
 const Registro = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    const usuarioLogueado = useSelector(state => state.logueado).logueado;
+
+    const apiKey = getCredentials().apiKey;
+    const userId = getCredentials().userId;
+  
+    if(apiKey && userId) {
+      navigate('/dashboard');
+    }
 
     const [userBody, setUserBody] = useState({
         usuario: '',
@@ -46,9 +59,15 @@ const Registro = () => {
       const registrarUsuario = async (body) => {
         const res = await axios.post(API_BASE_URL + API_ENDPOINTS.register, body)
           .then((response) => {
-            console.log('Solicitud exitosa:', response.data);
-            localStorage.setItem('apiKey',response.data.apiKey); 
-            localStorage.setItem('idUsuario',response.data.id); 
+           console.log('Solicitud exitosa:', response.data);
+            const usuarioLogueado = {
+              apiKey: response.data.apiKey,
+              userId: response.data.id
+            }
+            localStorage.setItem('apiKey',usuarioLogueado.apiKey); 
+            localStorage.setItem('userId',usuarioLogueado.userId); 
+
+            dispatch(setUsuario(usuarioLogueado))
             navigate("/dashboard");
           })
           .catch((error) => {

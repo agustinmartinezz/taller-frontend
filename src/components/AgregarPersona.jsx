@@ -63,12 +63,18 @@ const AgregarPersona = () => {
         idDepartamento : selectedDep
       }
     }
-
-    const res = await axios.get(BASE_URL + "/ciudades.php", data)
     
-    const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
-
-    setCiudades(formattedCiudades)
+    await axios.get(BASE_URL + "/ciudades.php", data)
+      .then((res) => {
+          if(res.codigo == 401) navigate("/login");
+          console.log("Success:", res.data);
+          const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
+          setCiudades(formattedCiudades)
+      })
+      .catch((error) => {
+          console.error("Error:", error);
+          navigate("/login");
+      });
   }
 
   const getOcupaciones = (ocupaciones) => {

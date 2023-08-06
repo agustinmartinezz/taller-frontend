@@ -2,18 +2,32 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/Session.css';
 import React, { useState, useEffect } from 'react';
 import { useNavigate,Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
+import { setUsuario } from '../features/logueadoSlice'
+import {getCredentials } from '../Utils/utils'
+
+
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const usuarioLogueado = useSelector(state => state.logueado).logueado;
+
+  const apiKey = getCredentials().apiKey;
+  const userId = getCredentials().userId;
+
+  if(apiKey && userId) {
+    navigate('/dashboard');
+  }
 
   const [userBody, setUserBody] = useState({
     usuario: '',
     password: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +52,14 @@ const Login = () => {
     const res = await axios.post(API_BASE_URL + API_ENDPOINTS.login, body)
       .then((response) => {
         console.log('Solicitud exitosa:', response.data);
-        localStorage.setItem('apiKey',response.data.apiKey); 
-        localStorage.setItem('userId',response.data.id); 
+        const usuarioLogueado = {
+          apiKey: response.data.apiKey,
+          userId: response.data.id
+        }
+        localStorage.setItem('apiKey',usuarioLogueado.apiKey); 
+        localStorage.setItem('userId',usuarioLogueado.userId); 
+
+        dispatch(setUsuario(usuarioLogueado))
         navigate("/dashboard");
       })
       .catch((error) => {

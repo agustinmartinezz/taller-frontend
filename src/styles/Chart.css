@@ -1,0 +1,6 @@
+@import "./variables.css";
+
+.chart {
+    display: flex;
+    justify-content: center;
+}
