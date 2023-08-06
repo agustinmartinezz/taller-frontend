@@ -35,12 +35,11 @@ const Login = () => {
   };
 
   const loguearUsuario = async (body) => {
-    debugger
     const res = await axios.post(API_BASE_URL + API_ENDPOINTS.login, body)
       .then((response) => {
         console.log('Solicitud exitosa:', response.data);
         localStorage.setItem('apiKey',response.data.apiKey); 
-        localStorage.setItem('idUsuario',response.data.id); 
+        localStorage.setItem('userId',response.data.id); 
         navigate("/dashboard");
       })
       .catch((error) => {

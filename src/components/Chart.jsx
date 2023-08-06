@@ -8,7 +8,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Chart = ({chartProps}) => {
     let component;
-
     switch (chartProps.type) {
         case 'bar':
             component = <Bar {...chartProps}/>

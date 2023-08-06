@@ -44,7 +44,6 @@ const Registro = () => {
 
     
       const registrarUsuario = async (body) => {
-        debugger
         const res = await axios.post(API_BASE_URL + API_ENDPOINTS.register, body)
           .then((response) => {
             console.log('Solicitud exitosa:', response.data);

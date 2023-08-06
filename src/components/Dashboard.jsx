@@ -8,10 +8,12 @@ import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
 import Mapa from './Mapa';
 
+
+
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  if(!localStorage.getItem("apiKey")){
+  if(!localStorage.getItem("apiKey") || !localStorage.getItem("userId")){
     navigate("/login");
   }
   

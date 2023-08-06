@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 import Select from 'react-select';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad } from '../utils/utils'
-import { useDispatch } from 'react-redux'
+import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials } from '../utils/utils'
+import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
 import { API_BASE_URL } from "../config/apiConfig";
@@ -25,6 +25,10 @@ const customStyles = {
 };
 
 const AgregarPersona = () => {
+  const BASE_URL = API_BASE_URL;
+  const api_key = getCredentials().apiKey //! do not hardcode
+  const user_id = getCredentials().userId//! do not hardcode
+
   const [modalIsOpen, setIsOpen] = useState(false);
 
   function openModal() {
@@ -42,25 +46,21 @@ const AgregarPersona = () => {
     setIsOpen(false);
   }
 
-  const navigate = useNavigate();
-
-  if(!localStorage.getItem("apiKey")){
-    navigate("/login");
-  }
-
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode
-  const user_id = "600"//! do not hardcode
-
   const headers = {
     "Content-Type" : "application/json",
     "apikey" : api_key,
     "iduser" : user_id
   }
   
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+
+  const departamento = useSelector(state => state.departamento);
+  const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
 
   const [ciudades, setCiudades] = useState([])
-  const [ocupaciones, setOcupaciones] = useState([])
+  const [ocuFiltradas, setOcupaciones] = useState([ocupaciones])
   const [formattedDepartamentos, setFormattedDepartamentos] = useState([])
 
   const [fechaNac, setFechaNac] = useState("")
@@ -72,15 +72,20 @@ const AgregarPersona = () => {
   const nombreUsuario = useRef(null)
 
   const getDepartamentos = async () => {
-    const data = {
-      headers : headers,
-    }
+    const data = {headers};
+    axios.get(BASE_URL + "/departamentos.php", data)
+    .then((res) => {
+        if(res.codigo == 401)
+          navigate("/login");
 
-    const res = await axios.get(API_BASE_URL + "/departamentos.php", data)
-    const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
-
-    dispatch(setDepartamentos(res.data.departamentos))
-    setFormattedDepartamentos(formattedDepartamentos)
+        const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
+        dispatch(setDepartamentos(res.data.departamentos))
+        setFormattedDepartamentos(formattedDepartamentos)
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+        navigate("/login");
+    });
   }
 
   const getCiudades = async () => {
@@ -98,14 +103,8 @@ const AgregarPersona = () => {
     setCiudades(formattedCiudades)
   }
 
-  const getOcupaciones = async () => {
-    const data = {
-      headers : headers,
-    }
-
-    const res = await axios.get(API_BASE_URL + "/ocupaciones.php", data)
-
-    const filtered = res.data.ocupaciones.filter((ocupacion) => (
+  const getOcupaciones = (ocupaciones) => {
+    const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
 
@@ -186,7 +185,7 @@ const AgregarPersona = () => {
   }, [selectedDep])
 
   useEffect(() => {
-    getOcupaciones()
+    getOcupaciones(ocupaciones)
   }, [esMenor])
 
   useEffect(() => {
@@ -203,7 +202,6 @@ const AgregarPersona = () => {
           style={customStyles}
           contentLabel="Agregar Persona"
         >
-          
           <div className='h-100 d-flex flex-column justify-content-around text-center'>
             <h2>Censar Persona</h2>
             <div className='row mb-3'>
@@ -237,7 +235,6 @@ const AgregarPersona = () => {
                   options={ciudades}
                 />
               </div>
-              
             </div>
             <div className='row'>
               <div className='col-12'>

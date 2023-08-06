@@ -11,6 +11,12 @@ export function validateNumber(inputNumber) {
   return !isNaN(parseFloat(inputNumber)) && isFinite(inputNumber);
 }
 
+export function getCredentials() {
+  const apiKey = localStorage.getItem('apiKey');
+  const userId = localStorage.getItem('userId');
+  return {apiKey, userId};
+}
+
 export function esMenorEdad(date) {
   const currentDate = new Date();
   const inputDate = new Date(date);

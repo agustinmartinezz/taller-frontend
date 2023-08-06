@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal';
-import { finDelCenso } from '../utils/utils'
+import { finDelCenso } from '../utils/utils.js';
 
 const customStyles = {
   content: {

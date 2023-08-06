@@ -16,11 +16,10 @@ const Card = ({infoCard}) => {
                 </div>
                 <div className="card-body">
                     <h6 className="mb-0 ">{infoCard.title}</h6>
-                    <p className="text-sm ">{infoCard.description}</p>
                     <hr className="dark horizontal" />
                     <div className="d-flex ">
                         <i className="material-icons text-sm my-auto me-1"></i>
-                        <p className="mb-0 text-sm"> campaign sent 2 days ago </p>
+                        <p className="mb-0 text-sm">{infoCard.description}</p>
                     </div>
                 </div>
             </div>

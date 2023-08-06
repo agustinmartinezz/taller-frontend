@@ -8,7 +8,7 @@ const Navigation = () => {
   const [logueado, setLoguedo] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('apiKey')) {
+    if (localStorage.getItem('apiKey') && localStorage.getItem("userId")) {
       setLoguedo(true);
     }
   }, []);
