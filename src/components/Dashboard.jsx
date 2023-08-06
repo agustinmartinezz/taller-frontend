@@ -23,18 +23,25 @@ const Dashboard = () => {
 
   return (
     <div className='container dash'>
-      <h2>Dashboard</h2>
       <div className="container-fluid py-4">
         <div className="row">
           <div className="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           </div>
         </div>
-        <ChartReports/>
-        <Personas />
-        <AgregarPersona />
-        <PorcentajeCensados />
-        <TiempoRestante />
-        <Mapa />
+        <div className='row'>
+          <ChartReports/>
+        </div>
+        <div className='row mb-4 cardStyle d-flex flex-column align-items-center'>
+          <TiempoRestante />
+          <AgregarPersona />
+        </div>        
+        <div className='row mb-4 cardStyle'>
+          <Personas />
+        </div>
+        <div className='row text-center cardStyle'>
+          <Mapa />
+          <PorcentajeCensados />
+        </div>
       </div>
     </div>
   )

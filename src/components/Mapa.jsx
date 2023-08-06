@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useSelector } from 'react-redux';
-import userEvent from '@testing-library/user-event';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -22,7 +21,7 @@ const Mapa = () => {
   }
 
   return (
-    <MapContainer className='z-0' center={[-33, -56]} zoom={6} scrollWheelZoom={false} style={{height: "400px", width:"100%"}}>
+    <MapContainer className='z-0 mb-3' center={[-33, -56]} zoom={6} scrollWheelZoom={false} style={{height: "400px", width:"100%"}}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -34,7 +33,6 @@ const Mapa = () => {
           </Popup>
         </Marker>
       ))}
-      
     </MapContainer>
   )
 }
