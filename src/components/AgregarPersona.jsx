@@ -26,8 +26,8 @@ const customStyles = {
 
 const AgregarPersona = () => {
   const BASE_URL = API_BASE_URL;
-  const api_key = getCredentials().apiKey //! do not hardcode
-  const user_id = getCredentials().userId//! do not hardcode
+  const api_key = getCredentials().apiKey
+  const user_id = getCredentials().userId
 
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -55,12 +55,10 @@ const AgregarPersona = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-  const departamento = useSelector(state => state.departamento);
   const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
 
   const [ciudades, setCiudades] = useState([])
-  const [ocuFiltradas, setOcupaciones] = useState([ocupaciones])
+  const [ocupacionesFiltradas, setOcupacionesFiltradas] = useState([ocupaciones])
   const [formattedDepartamentos, setFormattedDepartamentos] = useState([])
 
   const [fechaNac, setFechaNac] = useState("")
@@ -73,7 +71,8 @@ const AgregarPersona = () => {
 
   const getDepartamentos = async () => {
     const data = {headers};
-    axios.get(BASE_URL + "/departamentos.php", data)
+
+    await axios.get(BASE_URL + "/departamentos.php", data)
     .then((res) => {
         if(res.codigo == 401)
           navigate("/login");
@@ -82,8 +81,7 @@ const AgregarPersona = () => {
         dispatch(setDepartamentos(res.data.departamentos))
         setFormattedDepartamentos(formattedDepartamentos)
     })
-    .catch((error) => {
-        console.error("Error:", error);
+    .catch(() => {
         navigate("/login");
     });
   }
@@ -96,19 +94,25 @@ const AgregarPersona = () => {
       }
     }
 
-    const res = await axios.get(API_BASE_URL + "/ciudades.php", data)
-    
-    const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
+    await axios.get(API_BASE_URL + "/ciudades.php", data)
+    .then((res) => {
+      if(res.codigo == 401)
+        navigate("/login");
 
-    setCiudades(formattedCiudades)
+      const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
+      setCiudades(formattedCiudades)
+    })
+    .catch(() => {
+      navigate("/login");
+    })
   }
 
   const getOcupaciones = (ocupaciones) => {
     const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
-
-    setOcupaciones(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
+    
+    setOcupacionesFiltradas(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
   }
 
   const agregarPersona = async () => {
@@ -244,7 +248,7 @@ const AgregarPersona = () => {
                     onChange={(e) => {
                       setSelectedOcup(e.value);
                     }}
-                    options={ocupaciones}
+                    options={ocupacionesFiltradas}
                   />
                 </div>
             </div>

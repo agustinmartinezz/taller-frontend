@@ -1,6 +1,6 @@
 import React from 'react'
 import Personas from './Personas'
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AgregarPersona from './AgregarPersona'
 import TiempoRestante from './TiempoRestante'
 import '../styles/Dashboard.css'
