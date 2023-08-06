@@ -6,9 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
 import { setUsuario } from '../features/logueadoSlice'
-import {getCredentials } from '../Utils/utils'
-
-
+import { getCredentials } from '../utils/utils'
 
 const Login = () => {
   const navigate = useNavigate();

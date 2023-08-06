@@ -111,7 +111,7 @@ const AgregarPersona = () => {
     const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
-    
+    console.log("------------LOG AGUSTIN---- ", ocupaciones)
     setOcupacionesFiltradas(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
   }
 
@@ -190,7 +190,7 @@ const AgregarPersona = () => {
 
   useEffect(() => {
     getOcupaciones(ocupaciones)
-  }, [esMenor])
+  }, [ocupaciones, esMenor])
 
   useEffect(() => {
     setEsMenor(esMenorEdad(fechaNac))

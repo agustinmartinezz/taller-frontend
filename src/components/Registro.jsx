@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate,Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
 import { setUsuario } from '../features/logueadoSlice'
-import {getCredentials } from '../Utils/utils'
-import { Redirect } from 'react-router-dom';
+import { getCredentials } from '../utils/utils'
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
 

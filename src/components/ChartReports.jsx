@@ -73,7 +73,7 @@ const ChartReports = () => {
 
     console.log('personas',personas);
 
-    const mvdeoId = departamentos.find(dep => dep.label.toLowerCase() == 'montevideo')?.value;
+    const mvdeoId = departamentos.find(dep => dep.nombre.toLowerCase() == 'montevideo')?.value;
 
     console.log('mvdeoId',mvdeoId);
 
@@ -152,11 +152,11 @@ const getCensadosTotales = (idMontevideo,personas) => {
 
 const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
     const personasUser = personas.filter(p => p.idUsuario == usuario);
-    const dataValues = departamentos.map(dep => getCantidadByProp(personasUser,dep.value,'departamento'))
+    const dataValues = departamentos.map(dep => getCantidadByProp(personasUser,dep.id,'departamento'))
     debugger
     const infoPorDepto = {
         data : {
-            labels: departamentos.map(dep => dep.label),
+            labels: departamentos.map(dep => dep.nombre),
             // datasets
             
                 datasets: [
