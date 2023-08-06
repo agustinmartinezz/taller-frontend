@@ -1,10 +1,29 @@
 import React from 'react';
+import "../styles/Chart.css";
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 import { Doughnut,Bar,Pie } from 'react-chartjs-2';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    ArcElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const Chart = ({chartProps}) => {
     let component;

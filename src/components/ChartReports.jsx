@@ -5,12 +5,30 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
+
 import { useNavigate,Link } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad,getCredentials } from '../utils/utils'
+import { getCredentials } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import ocupacionSlice, { setOcupaciones } from '../features/ocupacionSlice'
 import { API_BASE_URL } from "../config/apiConfig"; 
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const ChartReports = () => {
 
@@ -134,60 +152,48 @@ const getCensadosTotales = (idMontevideo,personas) => {
 
 const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
     const personasUser = personas.filter(p => p.idUsuario == usuario);
-    const values = departamentos.map(dep => 
-    {
-        return {
-            label: dep.label,
-            cantidad: getCantidadByProp(personasUser,dep.value,'departamento')
-        }
-    })
-        
+    const dataValues = departamentos.map(dep => getCantidadByProp(personasUser,dep.value,'departamento'))
+    debugger
     const infoPorDepto = {
         data : {
             labels: departamentos.map(dep => dep.label),
-            datasets: [
-            {
-                label: 'Censados',
-                data: values,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(241, 49, 12, 0.2)',
-                  ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(241, 49, 12, 1)',
-                   
-                  ],
-                borderWidth: 1,
-            },
-            ],
-        }, 
-        // options: {
-        //     scales: {
-        //       y: {
-        //         beginAtZero: true
-        //       }
-        //     }
-        // },
+            // datasets
             
-        type: "pie"
+                datasets: [
+                    {
+                        label: 'Censados',
+                        data: dataValues,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    },
+                ],
+            
+
+        }, 
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        userCallback(label, index, labels) {
+                           // only show if whole number
+                           if (Math.floor(label) === label) {
+                               return label;
+                           }
+                        },
+                    }
+                },
+            },
+            indexAxis: 'y',
+          
+        },
+            
+        type: "bar"
     };
     return infoPorDepto;  
 }
 
 const getCensadosPorOcByUsuario = (personas,ocupaciones,usuario) => {
     const personasUser = personas.filter(p => p.idUsuario == usuario);
-    debugger
     const values = ocupaciones.map(ocu => getCantidadByProp(personasUser,ocu.id,'ocupacion'));
     const infoPorOcu = {
         data : {

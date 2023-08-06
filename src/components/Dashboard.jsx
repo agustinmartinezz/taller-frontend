@@ -6,17 +6,21 @@ import TiempoRestante from './TiempoRestante'
 import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
+import { getCredentials } from '../utils/utils'
+import { useSelector } from 'react-redux'
 import Mapa from './Mapa';
-
-
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
-  if(!localStorage.getItem("apiKey") || !localStorage.getItem("userId")){
-    navigate("/login");
-  }
+  const usuarioLogueado = useSelector(state => state.logueado).logueado;
   
+  const apiKey = getCredentials().apiKey;
+  const userId = getCredentials().userId;
+
+  if(!usuarioLogueado.apiKey && !usuarioLogueado.userId) { 
+    navigate('/dashboard');
+  }
+
   return (
     <div className='container dash'>
       <h2>Dashboard</h2>

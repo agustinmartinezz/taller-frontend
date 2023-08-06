@@ -2,8 +2,9 @@
 
 .card {
     box-shadow: var(--shadows);
-    max-width: 20em;
     margin: 0 auto;
+    max-height: 50em;
+    height: 100%;
   
     .card-header {
       padding: 1em;
