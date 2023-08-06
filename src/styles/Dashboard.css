@@ -8,3 +8,10 @@
     width: 100%;
     max-width: 100%;
 }
+
+.cardStyle {
+  border-radius: 5px;
+  border: 2px solid #b5b5b5;
+  box-shadow: 6px 7px 38px -15px rgba(0,0,0,0.5);
+  padding: 1rem;
+}

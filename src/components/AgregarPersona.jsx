@@ -198,7 +198,7 @@ const AgregarPersona = () => {
 
   return (
       <>
-        <button className='btn btn-success my-3 w-100' onClick={openModal}>Censar Persona</button>
+        <button className='btn btn-success my-3 w-25' onClick={openModal}>Censar Persona</button>
         <Modal
           isOpen={modalIsOpen}
           onAfterOpen={afterOpenModal}

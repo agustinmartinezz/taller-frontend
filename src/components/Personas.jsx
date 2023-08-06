@@ -54,8 +54,8 @@ const Personas = () => {
 
   return (
     <div>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="selectOcupacion">Filtrar por Ocupación</label>
+      <div className="mb-4 d-flex flex-column align-items-center">
+        <label className="form-label fw-bold" htmlFor="selectOcupacion">Filtrar por Ocupación</label>
         <select className="form-select w-25" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
           setSelectedOcup(e.target.value)
         }}>
@@ -67,7 +67,7 @@ const Personas = () => {
       </div>
        <section className='row gap-2 justify-content-center'>
        {persona.personas.map((persona) => (
-            <article key={persona.id} className='col-2 mb-3 articlePersona'>
+            <article key={persona.id} className='col-2 articlePersona'>
               <Persona {...persona}/>
             </article>
           ))}
