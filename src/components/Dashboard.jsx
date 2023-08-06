@@ -3,10 +3,10 @@ import Personas from './Personas'
 import { useNavigate,Link } from 'react-router-dom';
 import AgregarPersona from './AgregarPersona'
 import TiempoRestante from './TiempoRestante'
-import Card from './Card'
 import '../styles/Dashboard.css'
 import ChartReports from './ChartReports';
 import PorcentajeCensados from './PorcentajeCensados';
+import Mapa from './Mapa';
 
 
 
@@ -30,6 +30,7 @@ const Dashboard = () => {
         <AgregarPersona />
         <PorcentajeCensados />
         <TiempoRestante />
+        <Mapa />
       </div>
     </div>
   )

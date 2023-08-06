@@ -11,7 +11,7 @@ const Home = () => {
   }
   
   return (
-    <div className='text-center mt-2'>
+    <div className='text-center homeContainer'>
       <h1>Bienvenido a Censo 2023!</h1>
     </div>
   )

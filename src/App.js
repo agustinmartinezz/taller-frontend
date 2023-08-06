@@ -1,6 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import Home from './components/Home';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
@@ -17,6 +18,7 @@ function App() {
         <Route path="/register" element={<Session operation='register'/>} />
         <Route path="/login" element={<Session operation='login'/>} />
       </Routes>
+      <Footer />
       <Toaster />
     </div>
   );

@@ -15,23 +15,27 @@ const Navigation = () => {
 
 
   return (
-    <div className='bg-dark'>
-      <nav className="navbar navbar-expand navbar-dark container">
+    <div className='bg-dark navContainer'>
+      <nav className="navbar navbar-expand justify-content-between navbar-dark container">
         <a className="navbar-brand" href="/">Censo 2023</a>
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li className="nav-item">
-            <a className="nav-link text-light" href="/dashboard">Dashboard</a>
-          </li>
-          {logueado ? 
-            <li className="nav-item">
-              <button className="nav-link text-light" onClick={logOut}>Cerrar Sesión</button>
-            </li> :
+          
+          {logueado ?
             <>
               <li className="nav-item">
-                <a className="nav-link text-light" href="/register">Registrarse</a>
+                <a className="nav-link text-light" href="/dashboard">Dashboard</a>
               </li>
               <li className="nav-item">
+                <button className="nav-link text-light" onClick={logOut}>Cerrar Sesión</button>
+              </li>
+            </>
+            :
+            <>
+              <li className="nav-item">
                 <a className="nav-link text-light" href="/login">Login</a>
+              </li>            
+              <li className="nav-item">
+                <a className="nav-link text-light" href="/register">Registrarse</a>
               </li>
             </>
             }
