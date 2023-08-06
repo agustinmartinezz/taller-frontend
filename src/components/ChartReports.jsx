@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import Select from 'react-select';
 
 import { useNavigate,Link } from 'react-router-dom';
-import { getCredentials } from '../Utils/utils'
+import { getCredentials } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import ocupacionSlice, { setOcupaciones } from '../features/ocupacionSlice'
 import { API_BASE_URL } from "../config/apiConfig"; 
@@ -51,7 +51,9 @@ const ChartReports = () => {
         const data = {headers};
         axios.get(BASE_URL + "/ocupaciones.php", data)
         .then((res) => {
-            if(res.codigo == 401) navigate("/login");
+            if(res.codigo == 401)
+              navigate("/login");
+            
             console.log("Success:", res.data);
             dispatch(setOcupaciones(res.data.ocupaciones))
         })

@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setUsuario } from '../features/logueadoSlice'
 import { useNavigate,Link } from 'react-router-dom';
 
-
-
 const Navigation = () => {
   const logueado = useSelector(state => state.logueado).logueado;
   const dispatch = useDispatch();
@@ -19,13 +17,11 @@ const Navigation = () => {
     navigate('/login');
   }
 
-
   return (
-    <div className='bg-dark'>
-      <nav className="navbar navbar-expand navbar-dark container">
+    <div className='bg-dark navContainer'>
+      <nav className="navbar navbar-expand justify-content-between navbar-dark container">
         <a className="navbar-brand" href="/">Censo 2023</a>
-        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">
-       
+        <ul className="navbar-nav mr-auto mt-2 mt-lg-0">      
           {(logueado.apiKey && logueado.userId) ? 
             <>
               <li className="nav-item">
@@ -54,5 +50,3 @@ const Navigation = () => {
 }
 
 export default Navigation
-
-

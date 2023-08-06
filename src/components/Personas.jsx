@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Persona from './Persona';
-import { useNavigate,Link } from 'react-router-dom';
+import '../styles/Personas.css'
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonas } from '../features/personaSlice';
+import { API_BASE_URL } from "../config/apiConfig";
+import { getCredentials } from '../utils/utils'
 
 const Personas = () => {
-
-  const BASE_URL = "https://censo.develotion.com/"
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1"//!
-  const user_id = "600"//!
-  const navigate = useNavigate();
+  const BASE_URL = API_BASE_URL;
+  const api_key = getCredentials().apiKey
+  const user_id = getCredentials().userId
 
   const headers = {
     "Content-Type" : "application/json",
@@ -20,10 +21,9 @@ const Personas = () => {
   const persona = useSelector(state => state.persona);
   const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
 
-
   const dispatch = useDispatch()
+  const navigate = useNavigate();
 
-  //const [ocupaciones, setOcupaciones] = useState([])
   const [selectedOcup, setSelectedOcup] = useState(0)
 
   const getPersonas = async () => {
@@ -34,34 +34,19 @@ const Personas = () => {
       }
     }
 
-         axios.get(BASE_URL + "/personas.php", data)
-        .then((res) => {
-            if(res.codigo == 401) navigate("/login");
-            console.log("Success:", res.data);
-            const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
-            dispatch(setPersonas(personas))
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            navigate("/login");
-        });
+    await axios.get(BASE_URL + "/personas.php", data)
+    .then((res) => {
+      if(res.codigo == 401)
+        navigate("/login");
 
-    
+      const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
+      dispatch(setPersonas(personas))
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      navigate("/login");
+    })
   }
-
-  // const getOcupaciones = async () => {
-  //   const data = {
-  //     headers : headers,
-  //   }
-
-  //   const res = await axios.get(BASE_URL + "/ocupaciones.php", data)
-
-  //   setOcupaciones(res.data.ocupaciones)
-  // }
-
-  // useEffect(() => {
-  //   getOcupaciones()
-  // }, [])
 
   useEffect(() => {
     getPersonas()
@@ -70,7 +55,7 @@ const Personas = () => {
   return (
     <div>
       <div className="mb-3">
-        <label className="form-label" htmlFor="selectOcupacion">Ocupacion</label>
+        <label className="form-label" htmlFor="selectOcupacion">Filtrar por Ocupación</label>
         <select className="form-select w-25" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
           setSelectedOcup(e.target.value)
         }}>
@@ -80,9 +65,9 @@ const Personas = () => {
           ))}
         </select>
       </div>
-       <section className='row gap-2'>
+       <section className='row gap-2 justify-content-center'>
        {persona.personas.map((persona) => (
-            <article key={persona.id} className='col-2 mb-3'>
+            <article key={persona.id} className='col-2 mb-3 articlePersona'>
               <Persona {...persona}/>
             </article>
           ))}

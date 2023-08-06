@@ -2,19 +2,49 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
-import { useNavigate,Link } from 'react-router-dom';
-import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials } from '../Utils/utils'
+import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
+import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
 import { API_BASE_URL } from "../config/apiConfig";
 
-const AgregarPersona = () => {
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    height: '50vh',
+    width: '40vw',
+    boxShadow: '6px 7px 38px 10px rgba(0,0,0,0.5)'
+  },
+};
 
+const AgregarPersona = () => {
   const BASE_URL = API_BASE_URL;
-  console.log('getCredentials()',getCredentials())
-  const api_key = getCredentials().apiKey //! do not hardcode
-  const user_id = getCredentials().userId//! do not hardcode
+  const api_key = getCredentials().apiKey
+  const user_id = getCredentials().userId
+
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function afterOpenModal() {
+    if(modalIsOpen){
+      document.body.style.overflow = 'hidden';
+    } 
+  }
+
+  function closeModal() {
+    document.body.style.overflow = 'unset';
+    setIsOpen(false);
+  }
 
   const headers = {
     "Content-Type" : "application/json",
@@ -25,35 +55,35 @@ const AgregarPersona = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-
-  const departamento = useSelector(state => state.departamento);
   const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
 
-
   const [ciudades, setCiudades] = useState([])
-  const [ocuFiltradas, setOcupaciones] = useState([ocupaciones])
+  const [ocupacionesFiltradas, setOcupacionesFiltradas] = useState([ocupaciones])
+  const [formattedDepartamentos, setFormattedDepartamentos] = useState([])
 
-  const nombreUsuario = useRef(null)
   const [fechaNac, setFechaNac] = useState("")
   const [esMenor, setEsMenor] = useState(false)
   const [selectedDep, setSelectedDep] = useState("")
   const [selectedCiu, setSelectedCiu] = useState("")
   const [selectedOcup, setSelectedOcup] = useState("")
 
+  const nombreUsuario = useRef(null)
+
   const getDepartamentos = async () => {
     const data = {headers};
-    axios.get(BASE_URL + "/departamentos.php", data)
+
+    await axios.get(BASE_URL + "/departamentos.php", data)
     .then((res) => {
-        if(res.codigo == 401)  navigate("/login");
-        console.log("Success:", res.data);
+        if(res.codigo == 401)
+          navigate("/login");
+
         const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
-        dispatch(setDepartamentos(formattedDepartamentos))
+        dispatch(setDepartamentos(res.data.departamentos))
+        setFormattedDepartamentos(formattedDepartamentos)
     })
-    .catch((error) => {
-        console.error("Error:", error);
+    .catch(() => {
         navigate("/login");
     });
-
   }
 
   const getCiudades = async () => {
@@ -63,27 +93,26 @@ const AgregarPersona = () => {
         idDepartamento : selectedDep
       }
     }
-    
-    await axios.get(BASE_URL + "/ciudades.php", data)
-      .then((res) => {
-          if(res.codigo == 401) navigate("/login");
-          console.log("Success:", res.data);
-          const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
-          setCiudades(formattedCiudades)
-      })
-      .catch((error) => {
-          console.error("Error:", error);
-          navigate("/login");
-      });
+
+    await axios.get(API_BASE_URL + "/ciudades.php", data)
+    .then((res) => {
+      if(res.codigo == 401)
+        navigate("/login");
+
+      const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
+      setCiudades(formattedCiudades)
+    })
+    .catch(() => {
+      navigate("/login");
+    })
   }
 
   const getOcupaciones = (ocupaciones) => {
-    debugger
     const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
-
-    setOcupaciones(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
+    
+    setOcupacionesFiltradas(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
   }
 
   const agregarPersona = async () => {
@@ -124,13 +153,16 @@ const AgregarPersona = () => {
     }
 
     try {
-      const res = await axios.post(BASE_URL + "/personas.php", body, { headers })
+      const res = await axios.post(API_BASE_URL + "/personas.php", body, { headers })
       if (res.data.codigo === 200) {
         toast.success("Persona agregada con éxito!")
-        limpiarEstados()
-        body.id = res.data.idCenso
 
+        limpiarEstados()
+
+        body.id = res.data.idCenso
         dispatch(addPersona(body))
+
+        closeModal()
       } else {
         toast.error(res.data.mensaje);
       }
@@ -166,51 +198,65 @@ const AgregarPersona = () => {
 
   return (
       <>
-        <div className='row mb-3'>
-            <div className='col-8'>
-              <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre' ref={nombreUsuario}/>
+        <button className='btn btn-success my-3 w-100' onClick={openModal}>Censar Persona</button>
+        <Modal
+          isOpen={modalIsOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Agregar Persona"
+        >
+          <div className='h-100 d-flex flex-column justify-content-around text-center'>
+            <h2>Censar Persona</h2>
+            <div className='row mb-3'>
+                <div className='col-8'>
+                  <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre' ref={nombreUsuario}/>
+                </div>
+                <div className='col-4'>
+                  <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
+                    setFechaNac(e.target.value)
+                  }}/>
+                </div>
             </div>
-            <div className='col-4'>
-              <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
-                setFechaNac(e.target.value)
-              }}/>
+            <div className='row'>
+              <div className='col-6'>
+                <Select
+                  defaultValue={selectedDep}
+                  placeholder="Seleccione Departamento"
+                  onChange={(e) => {
+                    setSelectedDep(e.value);
+                  }}
+                  options={formattedDepartamentos}
+                />
+              </div>
+              <div className='col-6'>
+                <Select
+                  defaultValue={selectedCiu}
+                  placeholder="Seleccione Ciudad"
+                  onChange={(e) => {
+                    setSelectedCiu(e.value);
+                  }}
+                  options={ciudades}
+                />
+              </div>
             </div>
-        </div>
-        <div className='row'>
-          <div className='col-4'>
-            <Select
-              defaultValue={selectedDep}
-              placeholder="Seleccione Departamento"
-              onChange={(e) => {
-                setSelectedDep(e.value);
-              }}
-              options={departamento.departamentos}
-            />
+            <div className='row'>
+              <div className='col-12'>
+                  <Select
+                    defaultValue={selectedOcup}
+                    placeholder="Seleccione Ocupacion"
+                    onChange={(e) => {
+                      setSelectedOcup(e.value);
+                    }}
+                    options={ocupacionesFiltradas}
+                  />
+                </div>
+            </div>
+            <div className='row text-center justify-content-evenly'>
+              <button className='btn btn-success mt-3 w-50' onClick={agregarPersona}>Confirmar</button>
+            </div>
           </div>
-          <div className='col-4'>
-            <Select
-              defaultValue={selectedCiu}
-              placeholder="Seleccione Ciudad"
-              onChange={(e) => {
-                setSelectedCiu(e.value);
-              }}
-              options={ciudades}
-            />
-          </div>
-          <div className='col-4'>
-            <Select
-              defaultValue={selectedOcup}
-              placeholder="Seleccione Ocupacion"
-              onChange={(e) => {
-                setSelectedOcup(e.value);
-              }}
-              options={ocuFiltradas}
-            />
-          </div>
-        </div>
-        <div className='row text-center'>
-          <button className='btn btn-success mt-3' onClick={agregarPersona}>Agregar Persona</button>
-        </div>
+        </Modal>
       </>
   )
 }
