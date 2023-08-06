@@ -3,6 +3,7 @@ import {React, useState, useEffect} from 'react'
 const Navigation = () => {
   const logOut = () => {
     localStorage.removeItem('apiKey');
+    localStorage.removeItem('userId');
   }
 
   const [logueado, setLoguedo] = useState(false);
