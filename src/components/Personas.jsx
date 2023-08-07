@@ -24,6 +24,7 @@ const Personas = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate();
 
+  const [personasVisibles, setPersonasVisibles] = useState(persona.personas)
   const [selectedOcup, setSelectedOcup] = useState(0)
 
   const getPersonas = async () => {
@@ -39,8 +40,8 @@ const Personas = () => {
       if(res.codigo == 401)
         navigate("/login");
 
-      const personas = res.data.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
-      dispatch(setPersonas(personas))
+      dispatch(setPersonas(res.data.personas))
+      setPersonasVisibles(res.data.personas)
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -48,9 +49,18 @@ const Personas = () => {
     })
   }
 
+  const filterPersonas = () => {
+    const visibles = persona.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
+    setPersonasVisibles(visibles)
+  }
+
   useEffect(() => {
     getPersonas()
-  }, [selectedOcup])
+  }, [])
+
+  useEffect(() => {
+    filterPersonas()
+  }, [persona,selectedOcup])
 
   return (
     <div>
@@ -66,7 +76,7 @@ const Personas = () => {
         </select>
       </div>
        <section className='row gap-2 justify-content-center'>
-       {persona.personas.map((persona) => (
+       {personasVisibles.map((persona) => (
             <article key={persona.id} className='col-2 articlePersona'>
               <Persona {...persona}/>
             </article>

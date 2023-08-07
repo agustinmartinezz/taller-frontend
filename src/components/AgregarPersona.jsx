@@ -111,19 +111,21 @@ const AgregarPersona = () => {
     const filtered = ocupaciones.filter((ocupacion) => (
       ocupacion.ocupacion == "Estudiante" || esMenor == false
     ))
-    console.log("------------LOG AGUSTIN---- ", ocupaciones)
+
     setOcupacionesFiltradas(filtered.map((ocup) => ({value : ocup.id, label : ocup.ocupacion})))
   }
 
   const agregarPersona = async () => {
     let nombre = nombreUsuario.current.value
-
+    const today = new Date()
+    const birth = new Date(fechaNac)
+    
     if (!validateText(nombre)) {
       toast.error("Ingrese un nombre válido.")
       return
     }
 
-    if (!validateDate(fechaNac)) {
+    if (!validateDate(fechaNac) || birth > today) {
       toast.error("Ingrese una fecha de nacimiento válida.")
       return
     }
