@@ -8,7 +8,6 @@ import { getCredentials } from '../utils/utils'
 import axios from 'axios';
 import {API_BASE_URL,API_ENDPOINTS} from "../config/apiConfig";
 
-
 const Registro = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -41,9 +40,9 @@ const Registro = () => {
 
         let error = "";
         if(!userBody.usuario || !userBody.password || !userBody.confirm) 
-          error = 'Please complete all fields';
+          error = 'Por favor ingrese todos los datos.';
         else if(userBody.password != userBody.confirm) 
-          error = 'Passwords need to be the same';  
+          error = 'Las contraseñas deben coincidir.';  
         else{
           registrarUsuario(userBody);
         }
@@ -58,7 +57,6 @@ const Registro = () => {
       const registrarUsuario = async (body) => {
         const res = await axios.post(API_BASE_URL + API_ENDPOINTS.register, body)
           .then((response) => {
-           console.log('Solicitud exitosa:', response.data);
             const usuarioLogueado = {
               apiKey: response.data.apiKey,
               userId: response.data.id
@@ -75,7 +73,6 @@ const Registro = () => {
               usuario: '',
               password: ''
             });
-            console.error('Error en la solicitud:', error.response.data.mensaje);
           });
       }
 
@@ -84,33 +81,33 @@ const Registro = () => {
   return (
     <div className="d-flex align-items-start h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
         <form style={{ width: '23rem' }}>
-        <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: '1px' }}>Register</h3>
+        <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: '1px' }}>Registro</h3>
 
         <div className="form-outline mb-4">
             <input value={userBody.usuario}type="text" 
             onChange={handleChange} name="usuario"
-            placeholder="name" className="form-control form-control-lg" />
+            placeholder="Nombre" className="form-control form-control-lg" />
         </div>
 
         <div className="form-outline mb-4">
             <input value={userBody.password}type="password" 
             onChange={handleChange} name="password"
-            placeholder="password" className="form-control form-control-lg" />
+            placeholder="Contraseña" className="form-control form-control-lg" />
         </div>
 
         <div className="form-outline mb-4">
             <input value={userBody.confirm}type="password"
             onChange={handleChange} name="confirm"
-            placeholder="confirm" className="form-control form-control-lg" />
+            placeholder="Repetir Contraseña" className="form-control form-control-lg" />
         </div>
 
         <div className="pt-1 mb-4">
-            <button onClick={handleSubmit} className="btn btn-info btn-session btn-lg btn-block" type="button">Register</button>
+            <button onClick={handleSubmit} className="btn btn-info btn-session btn-lg btn-block" type="button">Registrarse</button>
         </div>
 
         {errorMsg && <p className="alert alert-danger" role="alert">{errorMsg}</p>}
 
-        <p>Already have an account? <Link href="/login" className="link-info">Login here</Link></p>
+        <p>Ya tienes una cuenta? <a href="/login" className="link-info">Ingresa aquí!</a></p>
         </form>
     </div>
   );

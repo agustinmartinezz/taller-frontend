@@ -37,7 +37,7 @@ const Navigation = () => {
                 <NavLink className="nav-link text-light" to="/register">Registrarse</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link text-light" to="/login">Login</NavLink>
+                <NavLink className="nav-link text-light" to="/login">Ingresar</NavLink>
               </li>
             </>
             }

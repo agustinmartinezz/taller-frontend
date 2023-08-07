@@ -153,7 +153,7 @@ const getCensadosTotales = (idMontevideo,personas) => {
 const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
     const personasUser = personas.filter(p => p.idUsuario == usuario);
     const dataValues = departamentos.map(dep => getCantidadByProp(personasUser,dep.id,'departamento'))
-    debugger
+
     const infoPorDepto = {
         data : {
             labels: departamentos.map(dep => dep.nombre),
