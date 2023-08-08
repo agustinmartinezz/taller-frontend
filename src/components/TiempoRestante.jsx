@@ -41,8 +41,8 @@ const TiempoRestante = () => {
 
   const daysLeft = Math.trunc(differenceInMilliseconds / (1000 * 60 * 60 * 24));
   return (
-    <>
-      <button className='btn btn-secondary my-3 w-25' onClick={openModal}>Días restantes</button>
+      <>
+      <button className='btn btn-secondary my-3 w-50' onClick={openModal}>Días restantes</button>
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
@@ -50,17 +50,20 @@ const TiempoRestante = () => {
         style={customStyles}
         contentLabel="Dias Restantes"
       >
-        <div className='h-100 d-flex flex-column '>
-          <div className='row text-center'>
-            <h3 className='m-0'>Faltan {daysLeft} días para que finalice el censo 2023.</h3>
+        <div className='modal-content'>
+          <div className='modal-body'>
+            <div className='row text-center'>
+              <h3 className='m-0'>Faltan {daysLeft} días para que finalice el censo 2023.</h3>
+            </div>
+            <div className='row my-3 justify-content-center'>
+              <button className='btn btn-danger w-50' onClick={closeModal}>Cerrar</button>
+            </div>
           </div>
-          <div className='row my-3 justify-content-center'>
-            <button className='btn btn-danger w-50' onClick={closeModal}>Cerrar</button>
-          </div>
-          
         </div>
       </Modal>
     </>
+  
+
   )
 }
 

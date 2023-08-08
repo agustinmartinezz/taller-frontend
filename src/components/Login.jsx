@@ -12,21 +12,30 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const usuarioLogueado = useSelector(state => state.logueado).logueado;
+
   const apiKey = getCredentials().apiKey;
   const userId = getCredentials().userId;
 
-  if(apiKey && userId) 
-    navigate('/dashboard');
+  useEffect(() => {
+    if(apiKey && userId) {
+      navigate('/dashboard');
+    }
+  }, [apiKey,userId])
+
 
   const [userBody, setUserBody] = useState({
     usuario: '',
     password: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserBody({ ...userBody, [name]: value });
+    setIsButtonDisabled(!userBody.usuario || !userBody.password);
   };
 
   const handleSubmit = (e) => {
@@ -85,6 +94,7 @@ const Login = () => {
 
         <div className="pt-1 mb-4">
             <button className="btn btn-session btn-info btn-lg btn-block" type="button"
+            disabled={isButtonDisabled}
             onClick={handleSubmit} 
             >Ingresar</button>
         </div>

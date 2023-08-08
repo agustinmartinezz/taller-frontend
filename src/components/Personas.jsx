@@ -72,7 +72,8 @@ const Personas = () => {
   }, [persona,selectedOcup])
 
   return (
-    <div>
+
+    <div className="container">
       <div className="mb-4 d-flex flex-column align-items-center">
         <label className="form-label fw-bold" htmlFor="selectOcupacion">Filtrar por Ocupación</label>
         <select className="form-select w-25" id="selectOcupacion" value={selectedOcup} onChange={(e) => {
@@ -84,14 +85,19 @@ const Personas = () => {
           ))}
         </select>
       </div>
-       <section className='row gap-2 justify-content-center'>
-       {personasVisibles.map((persona) => (
-            <article key={persona.id} className='col-2 articlePersona'>
-              <Persona {...persona}/>
-            </article>
-          ))}
-       </section>
+      <div className="row justify-content-center">
+        {personasVisibles.map((persona) => (
+          <div key={persona.id} className="col-md-4 col-sm-6 col-12 mb-4">
+            <div className="card">
+              <div className="card-body">
+                <Persona {...persona} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
+
   );
 }
 

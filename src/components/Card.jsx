@@ -9,9 +9,16 @@ const Card = ({infoCard}) => {
             <div className="card z-index-2 ">
                 <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div className="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                        { 
+                        infoCard.errorCard ? 
+                        <div class="alert alert-warning" role="alert">
+                            No tienes suficientes datos para cargar esta gráfica. Prueba explorando mas funciones en el dashboard .
+                        </div> 
+                        :
                         <div className="chart">
                             <Chart chartProps={infoCard.chartinfo}/>
                         </div>
+                        }
                     </div>
                 </div>
                 <div className="card-body">

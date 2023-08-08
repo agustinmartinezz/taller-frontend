@@ -32,9 +32,8 @@ ChartJS.register(
 
 const ChartReports = () => {
     const BASE_URL = API_BASE_URL;
-    console.log('getCredentials()',getCredentials())
-    const api_key = getCredentials().apiKey //! do not hardcode
-    const user_id = getCredentials().userId //! do not hardcode
+    const api_key = getCredentials().apiKey 
+    const user_id = getCredentials().userId 
   
     const headers = {
       "Content-Type" : "application/json",
@@ -60,7 +59,6 @@ const ChartReports = () => {
             if(res.codigo == 401)
               logOut()
             
-            console.log("Success:", res.data);
             dispatch(setOcupaciones(res.data.ocupaciones))
         })
         .catch((error) => {
@@ -77,35 +75,33 @@ const ChartReports = () => {
     const personas = useSelector(state => state.persona).personas;
     const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
 
-    console.log('personas',personas);
 
-    const mvdeoId = departamentos.find(dep => dep.nombre.toLowerCase() == 'montevideo')?.value;
-
-    console.log('mvdeoId',mvdeoId);
+    const mvdeoId = departamentos.find(dep => dep.nombre.toLowerCase() == 'montevideo')?.id;
 
     const infoTotales = getCensadosTotales(mvdeoId,personas);
-    // Censados totales
-    // Grafico de personas por departamento	
-    // Grafico de personas por ocupacion	
-
-    const infoDep = getCensadosPorDepByUsuario(personas,departamentos,600)//user_id);
-    const infoOcu = getCensadosPorOcByUsuario(personas,ocupaciones,600);
+    const infoDep = getCensadosPorDepByUsuario(personas,departamentos)
+    const infoOcu = getCensadosPorOcByUsuario(personas,ocupaciones);
 
     const reports = [
         {
             title: "Censados totales",
             description: "Cantidad de personas censadas en Montevideo y en el interior",
-            chartinfo: infoTotales
+            chartinfo: infoTotales,
+            errorCard: infoTotales == 'ERROR' ? true : false
         },
         {
             title: "Censados por departamento",
             description: "Cantidad de personas por departamento",
-            chartinfo: infoDep
+            chartinfo: infoDep,
+            errorCard: infoDep == 'ERROR' ? true : false
+
         },
          {
             title: "Censados por ocupacion",
             description: "Cantidad de personas censadas por ocupacion",
-            chartinfo: infoOcu
+            chartinfo: infoOcu,
+            errorCard: infoOcu == 'ERROR' ? true : false
+
         },
     ];
 
@@ -121,7 +117,6 @@ const ChartReports = () => {
 };
 
 const getCensadosTotales = (idMontevideo,personas) => {
-    console.log('info',`${idMontevideo} ${personas}`)
     let montevideanos = 0;
     let delInterior = 0;
 
@@ -131,7 +126,7 @@ const getCensadosTotales = (idMontevideo,personas) => {
     });
 
   
-    const infoTotales = {
+    let infoTotales = {
         data: {
             labels: ['Montevideo','Interior'],
             datasets: [
@@ -152,26 +147,28 @@ const getCensadosTotales = (idMontevideo,personas) => {
         },
         type: 'doughnut'
     };
+    if(!personas || !personas.length){
+        infoTotales = 'ERROR';
+    }
+
 
     return infoTotales;
 }
 
-const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
-    const personasUser = personas.filter(p => p.idUsuario == usuario);
-    const dataValues = departamentos.map(dep => getCantidadByProp(personasUser,dep.id,'departamento'))
+const getCensadosPorDepByUsuario = (personas,departamentos) => {
+    const dataValues = departamentos.map(dep => getCantidadByProp(personas,dep.id,'departamento'))
 
-    const infoPorDepto = {
+    let infoPorDepto = {
         data : {
             labels: departamentos.map(dep => dep.nombre),
-            // datasets
-            
-                datasets: [
-                    {
-                        label: 'Censados',
-                        data: dataValues,
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    },
-                ],
+            datasets: [
+                {
+                    label: 'Censados',
+                    data: dataValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                },
+            ],
             
 
         }, 
@@ -181,7 +178,6 @@ const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
                     beginAtZero: true,
                     ticks: {
                         userCallback(label, index, labels) {
-                           // only show if whole number
                            if (Math.floor(label) === label) {
                                return label;
                            }
@@ -195,13 +191,17 @@ const getCensadosPorDepByUsuario = (personas,departamentos,usuario) => {
             
         type: "bar"
     };
+
+    if(!personas || !personas.length || !departamentos || !departamentos.length){
+        infoPorDepto = 'ERROR';
+    }
+
     return infoPorDepto;  
 }
 
-const getCensadosPorOcByUsuario = (personas,ocupaciones,usuario) => {
-    const personasUser = personas.filter(p => p.idUsuario == usuario);
-    const values = ocupaciones.map(ocu => getCantidadByProp(personasUser,ocu.id,'ocupacion'));
-    const infoPorOcu = {
+const getCensadosPorOcByUsuario = (personas,ocupaciones) => {
+    const values = ocupaciones.map(ocu => getCantidadByProp(personas,ocu.id,'ocupacion'));
+    let infoPorOcu = {
         data : {
             labels: ocupaciones.map(ocu => ocu.ocupacion),
             datasets: [
@@ -233,6 +233,11 @@ const getCensadosPorOcByUsuario = (personas,ocupaciones,usuario) => {
         },
         type: "pie"
     };
+
+    if(!personas || !personas.length || !ocupaciones || !ocupaciones.length){
+        infoPorOcu = 'ERROR';
+    }
+
     return infoPorOcu;  
 }
 
