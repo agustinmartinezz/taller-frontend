@@ -3,11 +3,13 @@ import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import Modal from 'react-modal';
+import '../styles/AgregarPersona.css'
 import { useNavigate } from 'react-router-dom';
 import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
+import { setUsuario } from '../features/logueadoSlice'
 import { API_BASE_URL } from "../config/apiConfig";
 
 const customStyles = {
@@ -56,7 +58,7 @@ const AgregarPersona = () => {
   const navigate = useNavigate();
 
   const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
-
+ 
   const [ciudades, setCiudades] = useState([])
   const [ocupacionesFiltradas, setOcupacionesFiltradas] = useState([ocupaciones])
   const [formattedDepartamentos, setFormattedDepartamentos] = useState([])
@@ -75,14 +77,14 @@ const AgregarPersona = () => {
     await axios.get(BASE_URL + "/departamentos.php", data)
     .then((res) => {
         if(res.codigo == 401)
-          navigate("/login");
-
+          logOut()
+          
         const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
         dispatch(setDepartamentos(res.data.departamentos))
         setFormattedDepartamentos(formattedDepartamentos)
     })
     .catch(() => {
-        navigate("/login");
+      logOut()
     });
   }
 
@@ -97,13 +99,13 @@ const AgregarPersona = () => {
     await axios.get(API_BASE_URL + "/ciudades.php", data)
     .then((res) => {
       if(res.codigo == 401)
-        navigate("/login");
+        logOut()
 
       const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
       setCiudades(formattedCiudades)
     })
     .catch(() => {
-      navigate("/login");
+      logOut()
     })
   }
 
@@ -181,6 +183,14 @@ const AgregarPersona = () => {
     setSelectedOcup(0)
   }
 
+  const logOut = () => {
+    const usuarioLogueado = {}
+    dispatch(setUsuario(usuarioLogueado));
+    localStorage.removeItem('apiKey');
+    localStorage.removeItem('userId');
+    navigate('/login');
+  }
+
   useEffect(() => {
     getDepartamentos()
   }, [])
@@ -199,73 +209,68 @@ const AgregarPersona = () => {
   }, [fechaNac])
 
   return (
-     
       <>
-  <button className='btn btn-success my-3 w-50' onClick={openModal}>Censar Persona</button>
-  <Modal
-    isOpen={modalIsOpen}
-    onAfterOpen={afterOpenModal}
-    onRequestClose={closeModal}
-    style={customStyles}
-    contentLabel="Agregar Persona"
-  >
-    <div className='modal-content'>
-      <div className='modal-header'>
-        <h2 className='modal-title'>Censar Persona</h2>
-      </div>
-      <div className='modal-body'>
-        <div className='row mb-3'>
-          <div className='col-8'>
-            <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre' ref={nombreUsuario}/>
+        <button className='btn btn-success my-3 col-6 col-lg-3' onClick={openModal}>Censar Persona</button>
+        <Modal
+          isOpen={modalIsOpen}
+          onAfterOpen={afterOpenModal}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Agregar Persona"
+          id='modalAgregarPersona'
+        >
+          <div className='h-100 d-flex flex-column justify-content-around text-center'>
+            <h2>Censar Persona</h2>
+            <div className='row mb-3'>
+                <div className='col-8'>
+                  <input type="text" id="txtNombrePersona" className="form-control" placeholder='Nombre' ref={nombreUsuario}/>
+                </div>
+                <div className='col-4'>
+                  <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
+                    setFechaNac(e.target.value)
+                  }}/>
+                </div>
+            </div>
+            <div className='row'>
+              <div className='col-6'>
+                <Select
+                  defaultValue={selectedDep}
+                  placeholder="Seleccione Departamento"
+                  onChange={(e) => {
+                    setSelectedDep(e.value);
+                  }}
+                  options={formattedDepartamentos}
+                />
+              </div>
+              <div className='col-6'>
+                <Select
+                  defaultValue={selectedCiu}
+                  placeholder="Seleccione Ciudad"
+                  onChange={(e) => {
+                    setSelectedCiu(e.value);
+                  }}
+                  options={ciudades}
+                />
+              </div>
+            </div>
+            <div className='row'>
+              <div className='col-12'>
+                  <Select
+                    defaultValue={selectedOcup}
+                    placeholder="Seleccione Ocupacion"
+                    onChange={(e) => {
+                      setSelectedOcup(e.value);
+                    }}
+                    options={ocupacionesFiltradas}
+                  />
+                </div>
+            </div>
+            <div className='row text-center justify-content-evenly'>
+              <button className='btn btn-success mt-3 w-50' onClick={agregarPersona}>Confirmar</button>
+            </div>
           </div>
-          <div className='col-4'>
-            <input id="birthDate" className="form-control" type="date" placeholder='Nacimiento' value={fechaNac} onChange={(e) => {
-              setFechaNac(e.target.value)
-            }}/>
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-6 mb-2'>
-            <Select
-              defaultValue={selectedDep}
-              placeholder="Seleccione Departamento"
-              onChange={(e) => {
-                setSelectedDep(e.value);
-              }}
-              options={formattedDepartamentos}
-            />
-          </div>
-          <div className='col-6 mb-2'>
-            <Select
-              defaultValue={selectedCiu}
-              placeholder="Seleccione Ciudad"
-              onChange={(e) => {
-                setSelectedCiu(e.value);
-              }}
-              options={ciudades}
-            />
-          </div>
-        </div>
-        <div className='row'>
-          <div className='col-12 mb-2'>
-            <Select
-              defaultValue={selectedOcup}
-              placeholder="Seleccione Ocupacion"
-              onChange={(e) => {
-                setSelectedOcup(e.value);
-              }}
-              options={ocupacionesFiltradas}
-            />
-          </div>
-        </div>
-      </div>
-      <div className='modal-footer d-flex justify-content-center mb-2'>
-        <button className='btn btn-success w-50' onClick={agregarPersona}>Confirmar</button>
-      </div>
-    </div>
-  </Modal>
-</>
-
+        </Modal>
+      </>
   )
 }
 

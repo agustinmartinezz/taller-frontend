@@ -45,7 +45,7 @@ const Persona = ({ id , nombre }) => {
   return (
     <div className='row justify-content-center text-center bg-light bg-gradient rounded-3'>
       <p className='mt-2'><strong>{id}</strong> - {nombre}</p>
-      <button className='btn btn-danger w-55 mb-3' id={id} onClick={deletePersona} >Eliminar</button>
+      <button className='btn btn-danger w-50 mb-3' id={id} onClick={deletePersona} >Eliminar</button>
     </div>
   )
 }

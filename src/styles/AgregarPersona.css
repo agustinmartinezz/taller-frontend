@@ -1,0 +1,11 @@
+@media (max-width: 1600px) {
+  #modalAgregarPersona{
+    width: 60vw !important;
+  }
+}
+
+@media (max-width: 850px) {
+  #modalAgregarPersona{
+    width: 90vw !important;
+  }
+}

@@ -1,0 +1,11 @@
+@media (max-width: 1600px) {
+  #modalTiempoRestante{
+    width: 70vw !important;
+  }
+}
+
+@media (max-width: 850px) {
+  #modalTiempoRestante{
+    width: 95vw !important;
+  }
+}

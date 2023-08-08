@@ -5,11 +5,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import Select from 'react-select';
-
 import { useNavigate,Link } from 'react-router-dom';
 import { getCredentials } from '../utils/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import ocupacionSlice, { setOcupaciones } from '../features/ocupacionSlice'
+import { setUsuario } from '../features/logueadoSlice'
 import { API_BASE_URL } from "../config/apiConfig"; 
 import {
     Chart as ChartJS,
@@ -31,7 +31,6 @@ ChartJS.register(
 );
 
 const ChartReports = () => {
-
     const BASE_URL = API_BASE_URL;
     const api_key = getCredentials().apiKey 
     const user_id = getCredentials().userId 
@@ -43,15 +42,22 @@ const ChartReports = () => {
     }
 
     const navigate = useNavigate();
-
     const dispatch = useDispatch()
-   
+    
+    const logOut = () => {
+      const usuarioLogueado = {}
+      dispatch(setUsuario(usuarioLogueado));
+      localStorage.removeItem('apiKey');
+      localStorage.removeItem('userId');
+      navigate('/login');
+    }
+
     const getOcupaciones = async () => {
         const data = {headers};
         axios.get(BASE_URL + "/ocupaciones.php", data)
         .then((res) => {
             if(res.codigo == 401)
-              navigate("/login");
+              logOut()
             
             dispatch(setOcupaciones(res.data.ocupaciones))
         })
