@@ -11,17 +11,18 @@ import { getCredentials } from '../utils/utils'
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const usuarioLogueado = useSelector(state => state.logueado).logueado;
 
   const apiKey = getCredentials().apiKey;
   const userId = getCredentials().userId;
-
 
   useEffect(() => {
     if(apiKey && userId) {
       navigate('/dashboard');
     }
   }, [apiKey,userId])
+
 
   const [userBody, setUserBody] = useState({
     usuario: '',

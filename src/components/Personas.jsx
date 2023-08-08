@@ -5,6 +5,7 @@ import '../styles/Personas.css'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPersonas } from '../features/personaSlice';
+import { setUsuario } from '../features/logueadoSlice'
 import { API_BASE_URL } from "../config/apiConfig";
 import { getCredentials } from '../utils/utils'
 
@@ -38,7 +39,8 @@ const Personas = () => {
     await axios.get(BASE_URL + "/personas.php", data)
     .then((res) => {
       if(res.codigo == 401)
-        navigate("/login");
+        logOut()
+      
       dispatch(setPersonas(res.data.personas))
       setPersonasVisibles(res.data.personas)
     })
@@ -51,6 +53,14 @@ const Personas = () => {
   const filterPersonas = () => {
     const visibles = persona.personas.filter((persona) => selectedOcup == 0 || persona.ocupacion == selectedOcup)
     setPersonasVisibles(visibles)
+  }
+
+  const logOut = () => {
+    const usuarioLogueado = {}
+    dispatch(setUsuario(usuarioLogueado));
+    localStorage.removeItem('apiKey');
+    localStorage.removeItem('userId');
+    navigate('/login');
   }
 
   useEffect(() => {

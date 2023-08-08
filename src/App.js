@@ -13,7 +13,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 function App() {
   return (
     <div className="App">
-      {/* <Navigation /> */}
       <Provider store={store}>
         <BrowserRouter>
           <Routes>
