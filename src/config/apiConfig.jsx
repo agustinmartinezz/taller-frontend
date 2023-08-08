@@ -5,4 +5,5 @@ const API_ENDPOINTS = {
   register: '/usuarios.php',
 };
 
+
 export { API_BASE_URL, API_ENDPOINTS };

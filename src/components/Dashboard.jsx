@@ -13,12 +13,12 @@ import Mapa from './Mapa';
 const Dashboard = () => {
   const navigate = useNavigate();
   const usuarioLogueado = useSelector(state => state.logueado).logueado;
-  
   const apiKey = getCredentials().apiKey;
   const userId = getCredentials().userId;
 
-  if(!usuarioLogueado.apiKey && !usuarioLogueado.userId) { 
-    navigate('/dashboard');
+  
+  if(!apiKey || !userId) { 
+    navigate('/login');
   }
 
   return (

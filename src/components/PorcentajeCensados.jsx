@@ -3,12 +3,14 @@ import axios from 'axios'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from "../config/apiConfig";
+import { getCredentials } from '../utils/utils'
+
 
 const PorcentajeCensados = () => {
 
   const BASE_URL = API_BASE_URL;
-  const api_key = "5a15b2ee00dbc3f9ca1d0bdf15d723d1" //! do not hardcode
-  const user_id = "600"//! do not hardcode
+  const api_key = getCredentials().apiKey 
+  const user_id = getCredentials().userId 
 
   const headers = {
     "Content-Type" : "application/json",
