@@ -8,6 +8,7 @@ import { validateNumber, validateText, validateDate, esMenorEdad, getCredentials
 import { useDispatch, useSelector } from 'react-redux'
 import { setDepartamentos } from '../features/departamentoSlice'
 import { addPersona } from '../features/personaSlice'
+import { setUsuario } from '../features/logueadoSlice'
 import { API_BASE_URL } from "../config/apiConfig";
 
 const customStyles = {
@@ -56,7 +57,7 @@ const AgregarPersona = () => {
   const navigate = useNavigate();
 
   const ocupaciones = useSelector(state => state.ocupacion).ocupaciones;
-
+ 
   const [ciudades, setCiudades] = useState([])
   const [ocupacionesFiltradas, setOcupacionesFiltradas] = useState([ocupaciones])
   const [formattedDepartamentos, setFormattedDepartamentos] = useState([])
@@ -75,14 +76,14 @@ const AgregarPersona = () => {
     await axios.get(BASE_URL + "/departamentos.php", data)
     .then((res) => {
         if(res.codigo == 401)
-          navigate("/login");
-
+          logOut()
+          
         const formattedDepartamentos = res.data.departamentos.map((dep) => ({value : dep.id, label : dep.nombre}))
         dispatch(setDepartamentos(res.data.departamentos))
         setFormattedDepartamentos(formattedDepartamentos)
     })
     .catch(() => {
-        navigate("/login");
+      logOut()
     });
   }
 
@@ -97,13 +98,13 @@ const AgregarPersona = () => {
     await axios.get(API_BASE_URL + "/ciudades.php", data)
     .then((res) => {
       if(res.codigo == 401)
-        navigate("/login");
+        logOut()
 
       const formattedCiudades = res.data.ciudades.map((ciu) => ({value : ciu.id, label : ciu.nombre}))
       setCiudades(formattedCiudades)
     })
     .catch(() => {
-      navigate("/login");
+      logOut()
     })
   }
 
@@ -179,6 +180,14 @@ const AgregarPersona = () => {
     setSelectedDep(0)
     setSelectedCiu(0)
     setSelectedOcup(0)
+  }
+
+  const logOut = () => {
+    const usuarioLogueado = {}
+    dispatch(setUsuario(usuarioLogueado));
+    localStorage.removeItem('apiKey');
+    localStorage.removeItem('userId');
+    navigate('/login');
   }
 
   useEffect(() => {
