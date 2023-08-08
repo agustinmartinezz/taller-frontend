@@ -12,14 +12,11 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const usuarioLogueado = useSelector(state => state.logueado).logueado;
-
   const apiKey = getCredentials().apiKey;
   const userId = getCredentials().userId;
 
-  if(apiKey && userId) {
+  if(apiKey && userId) 
     navigate('/dashboard');
-  }
 
   const [userBody, setUserBody] = useState({
     usuario: '',
