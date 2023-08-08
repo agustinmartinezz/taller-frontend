@@ -225,7 +225,7 @@ const AgregarPersona = () => {
           </div>
         </div>
         <div className='row'>
-          <div className='col-6'>
+          <div className='col-6 mb-2'>
             <Select
               defaultValue={selectedDep}
               placeholder="Seleccione Departamento"
@@ -235,7 +235,7 @@ const AgregarPersona = () => {
               options={formattedDepartamentos}
             />
           </div>
-          <div className='col-6'>
+          <div className='col-6 mb-2'>
             <Select
               defaultValue={selectedCiu}
               placeholder="Seleccione Ciudad"
@@ -247,7 +247,7 @@ const AgregarPersona = () => {
           </div>
         </div>
         <div className='row'>
-          <div className='col-12'>
+          <div className='col-12 mb-2'>
             <Select
               defaultValue={selectedOcup}
               placeholder="Seleccione Ocupacion"
@@ -259,7 +259,7 @@ const AgregarPersona = () => {
           </div>
         </div>
       </div>
-      <div className='modal-footer d-flex justify-content-center'>
+      <div className='modal-footer d-flex justify-content-center mb-2'>
         <button className='btn btn-success w-50' onClick={agregarPersona}>Confirmar</button>
       </div>
     </div>
