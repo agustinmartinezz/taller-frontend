@@ -29,27 +29,26 @@ const Login = () => {
     password: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const disabled = userBody.usuario == "" || userBody.password == "";
+  const [isButtonDisabled, setIsButtonDisabled] = useState(disabled);
 
+console.log('disabled',disabled)
 
   const handleChange = (e) => {
+    debugger
+
     const { name, value } = e.target;
     setUserBody({ ...userBody, [name]: value });
-    setIsButtonDisabled(!userBody.usuario || !userBody.password);
+    const leftProp = (name == 'usuario') ? 'password' : 'usuario';
+    setIsButtonDisabled(value == '' || userBody[leftProp] == '');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(!userBody.usuario || !userBody.password){
-      setErrorMsg('Por favor ingrese usuario y contraseña.');
-      setUserBody({
-        usuario: '',
-        password: ''
-      });
-    }else{
-      loguearUsuario(userBody);
-    }
+  
+    loguearUsuario(userBody);
+    
   };
 
   const loguearUsuario = async (body) => {

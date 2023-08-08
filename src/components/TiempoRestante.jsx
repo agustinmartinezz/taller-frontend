@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Modal from 'react-modal';
 import '../styles/TiempoRestante.css'
 import { finDelCenso } from '../utils/utils.js';
+// import '../styles/Dashboard.css';
 
 const customStyles = {
   content: {
