@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Modal from 'react-modal';
+import '../styles/TiempoRestante.css'
 import { finDelCenso } from '../utils/utils.js';
 
 const customStyles = {
@@ -41,29 +42,27 @@ const TiempoRestante = () => {
 
   const daysLeft = Math.trunc(differenceInMilliseconds / (1000 * 60 * 60 * 24));
   return (
-      <>
-      <button className='btn btn-secondary my-3 w-50' onClick={openModal}>Días restantes</button>
+    <>
+      <button className='btn btn-secondary my-3 col-6 col-lg-3' onClick={openModal}>Días restantes</button>
       <Modal
         isOpen={modalIsOpen}
         onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Dias Restantes"
+        id="modalTiempoRestante"
       >
-        <div className='modal-content'>
-          <div className='modal-body'>
-            <div className='row text-center'>
-              <h3 className='m-0'>Faltan {daysLeft} días para que finalice el censo 2023.</h3>
-            </div>
-            <div className='row my-3 justify-content-center'>
-              <button className='btn btn-danger w-50' onClick={closeModal}>Cerrar</button>
-            </div>
+        <div className='h-100 d-flex flex-column'>
+          <div className='row text-center'>
+            <h3 className='m-0'>Faltan {daysLeft} días para que finalice el censo 2023.</h3>
           </div>
+          <div className='row my-3 justify-content-center'>
+            <button className='btn btn-danger w-50' onClick={closeModal}>Cerrar</button>
+          </div>
+          
         </div>
       </Modal>
     </>
-  
-
   )
 }
 

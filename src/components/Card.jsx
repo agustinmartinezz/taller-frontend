@@ -11,7 +11,7 @@ const Card = ({infoCard}) => {
                     <div className="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                         { 
                         infoCard.errorCard ? 
-                        <div class="alert alert-warning" role="alert">
+                        <div className="alert alert-warning" role="alert">
                             No tienes suficientes datos para cargar esta gráfica. Prueba explorando mas funciones en el dashboard .
                         </div> 
                         :
